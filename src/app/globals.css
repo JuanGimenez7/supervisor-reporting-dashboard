@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fondo principal: gris claro */
+  --background: #f3f4f6; /* gray-100 */
+  --foreground: #111827; /* gray-900 */
+  --muted: #6b7280; /* gray-500 */
+  --card: #f8fafc; /* ligero para tarjetas */
 }
 
 @theme inline {
@@ -14,8 +17,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #eee; /* fondo oscuro, también en escala de grises */
+    --foreground: #e5e7eb; /* gray-200 */
+    --muted: #9ca3af; /* gray-400 */
+    --card: #111827;
   }
 }
 
@@ -23,4 +28,16 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Forzar imágenes y SVGs a escala de grises visualmente */
+img,
+svg,
+picture {
+  filter: grayscale(1) contrast(0.95) brightness(0.98);
+}
+
+/* Asegurar que iconos inline usen currentColor cuando sea posible */
+svg {
+  color: inherit;
 }

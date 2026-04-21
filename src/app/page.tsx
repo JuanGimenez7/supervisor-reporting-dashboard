@@ -81,13 +81,16 @@ function aggregateTotals(rows: ReportRowRaw[]): NumericTotals {
 
 function calculateAverageValue(
   rows: ReportRowRaw[],
-  column: keyof ReportRowRaw
+  column: keyof ReportRowRaw,
 ): number {
   if (rows.length === 0) {
     return 0;
   }
 
-  const total = rows.reduce((acc, row) => acc + parseNumericValue(row[column]), 0);
+  const total = rows.reduce(
+    (acc, row) => acc + parseNumericValue(row[column]),
+    0,
+  );
   return total / rows.length;
 }
 
@@ -203,7 +206,7 @@ export default function Home() {
       } catch {
         if (isMounted) {
           setError(
-            "No se pudo cargar el archivo report.json. Verifica que exista en /public."
+            "No se pudo cargar el archivo report.json. Verifica que exista en /public.",
           );
         }
       } finally {
@@ -222,15 +225,15 @@ export default function Home() {
 
   const uniqueSupervisores = useMemo(
     () => [...new Set(rows.map((row) => row.SUPERVISOR))].sort(),
-    [rows]
+    [rows],
   );
   const uniqueVendedores = useMemo(
     () => [...new Set(rows.map((row) => row.VENDEDOR))].sort(),
-    [rows]
+    [rows],
   );
   const uniqueRegiones = useMemo(
     () => [...new Set(rows.map((row) => row.REGION))].sort(),
-    [rows]
+    [rows],
   );
 
   const filteredRows = useMemo(() => {
@@ -248,7 +251,9 @@ export default function Home() {
         row.VENDEDOR.toLowerCase().includes(text) ||
         row.REGION.toLowerCase().includes(text);
 
-      return matchesSupervisor && matchesVendedor && matchesRegion && matchesText;
+      return (
+        matchesSupervisor && matchesVendedor && matchesRegion && matchesText
+      );
     });
   }, [rows, supervisorFilter, vendedorFilter, regionFilter, searchText]);
 
@@ -256,17 +261,91 @@ export default function Home() {
     () =>
       filteredRows.reduce(
         (acc, row) => acc + parseNumericValue(row.VENDIDO),
-        0
+        0,
       ),
-    [filteredRows]
+    [filteredRows],
   );
   const totalCobrado = useMemo(
     () =>
       filteredRows.reduce(
         (acc, row) => acc + parseNumericValue(row.COBRADO),
-        0
+        0,
       ),
-    [filteredRows]
+    [filteredRows],
+  );
+
+  const totalPresupuestoVentas = useMemo(
+    () =>
+      filteredRows.reduce(
+        (acc, row) => acc + parseNumericValue(row.PRESUPUESTO_VENTAS),
+        0,
+      ),
+    [filteredRows],
+  );
+
+  const percentVentasCumplidas = useMemo(
+    () => calculateCompliance(totalVendido, totalPresupuestoVentas),
+    [totalVendido, totalPresupuestoVentas],
+  );
+
+  const totalClientes = useMemo(
+    () =>
+      filteredRows.reduce(
+        (acc, row) => acc + parseNumericValue(row.CLIENTES),
+        0,
+      ),
+    [filteredRows],
+  );
+
+  const totalClientesActivados = useMemo(
+    () =>
+      filteredRows.reduce(
+        (acc, row) => acc + parseNumericValue(row.CLIENTES_ACTIVADOS),
+        0,
+      ),
+    [filteredRows],
+  );
+
+  const percentClientesActivados = useMemo(
+    () => calculateCompliance(totalClientesActivados, totalClientes),
+    [totalClientesActivados, totalClientes],
+  );
+
+  const totalPresupuestoCobros = useMemo(
+    () =>
+      filteredRows.reduce(
+        (acc, row) => acc + parseNumericValue(row.PRESUPUESTO_COBROS),
+        0,
+      ),
+    [filteredRows],
+  );
+
+  const percentCobrosCumplidas = useMemo(
+    () => calculateCompliance(totalCobrado, totalPresupuestoCobros),
+    [totalCobrado, totalPresupuestoCobros],
+  );
+
+  const avgMarcasActivadas = useMemo(
+    () => calculateAverageValue(filteredRows, "MARCAS_ACTIVADAS"),
+    [filteredRows],
+  );
+
+  const totalRenglonesImportados = useMemo(
+    () =>
+      filteredRows.reduce(
+        (acc, row) => acc + parseNumericValue(row.RENGLONES_IMPORTADOS),
+        0,
+      ),
+    [filteredRows],
+  );
+
+  const totalRenglonesNacionales = useMemo(
+    () =>
+      filteredRows.reduce(
+        (acc, row) => acc + parseNumericValue(row.RENGLONES_NACIONALES),
+        0,
+      ),
+    [filteredRows],
   );
 
   const pivotRows = useMemo(() => {
@@ -280,7 +359,7 @@ export default function Home() {
 
     return Array.from(supervisorMap.entries())
       .sort(([supervisorA], [supervisorB]) =>
-        supervisorA.localeCompare(supervisorB)
+        supervisorA.localeCompare(supervisorB),
       )
       .map(([supervisor, supervisorRows]) => {
         const vendorMap = new Map<string, ReportRowRaw[]>();
@@ -299,7 +378,7 @@ export default function Home() {
               totals: aggregateTotals(vendorRows),
               promedioMarcasActivadas: calculateAverageValue(
                 vendorRows,
-                "MARCAS_ACTIVADAS"
+                "MARCAS_ACTIVADAS",
               ),
             };
           });
@@ -309,7 +388,7 @@ export default function Home() {
           totals: aggregateTotals(supervisorRows),
           promedioMarcasActivadas: calculateAverageValue(
             supervisorRows,
-            "MARCAS_ACTIVADAS"
+            "MARCAS_ACTIVADAS",
           ),
           vendors,
         };
@@ -347,14 +426,17 @@ export default function Home() {
         } else {
           const pdfBlob = buildPdfBlob(
             groupRows,
-            `Reporte por ${groupBy}: ${groupValue}`
+            `Reporte por ${groupBy}: ${groupValue}`,
           );
           zip.file(`${safeName}.pdf`, pdfBlob);
         }
       }
 
       const zipBlob = await zip.generateAsync({ type: "blob" });
-      triggerDownload(zipBlob, `reportes-${groupBy.toLowerCase()}-${format}.zip`);
+      triggerDownload(
+        zipBlob,
+        `reportes-${groupBy.toLowerCase()}-${format}.zip`,
+      );
     } finally {
       setIsExportingBatch(false);
     }
@@ -370,8 +452,10 @@ export default function Home() {
   const areAllExpanded = useMemo(
     () =>
       pivotRows.length > 0 &&
-      pivotRows.every((group) => expandedSupervisors[group.supervisor] === true),
-    [pivotRows, expandedSupervisors]
+      pivotRows.every(
+        (group) => expandedSupervisors[group.supervisor] === true,
+      ),
+    [pivotRows, expandedSupervisors],
   );
 
   function toggleAllSupervisors() {
@@ -395,143 +479,122 @@ export default function Home() {
   if (error) {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center p-6">
-        <p className="text-red-600">{error}</p>
+        <p className="text-gray-700">{error}</p>
       </main>
     );
   }
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-9xl flex-col gap-4 p-4 md:p-6">
-      <header className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <header className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
         <h1 className="text-xl font-bold text-gray-900 md:text-2xl">
-          Dashboard de Supervisión
+          Dashboard de Supervisores
         </h1>
         <p className="mt-1 text-sm text-gray-600">
-          Filtra por supervisor vendedor. Exporta el resultado actual o
-          genera archivos por lote.
+          Filtra por supervisor y vendedor. Exporta el resultado actual o genera
+          archivos por lote.
         </p>
       </header>
 
-      <section className="grid gap-3 md:grid-cols-3">
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Filas visibles</p>
-          <p className="text-2xl font-semibold text-gray-900">{filteredRows.length}</p>
+      <section className="grid gap-3 grid-cols-1 md:grid-cols-3">
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Presupuesto de Ventas</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatNumber(totalPresupuestoVentas)}
+          </p>
         </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Total vendido</p>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Vendido</p>
           <p className="text-2xl font-semibold text-gray-900">
             {formatNumber(totalVendido)}
           </p>
         </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Total cobrado</p>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Cumplimiento de Ventas</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatPercent(percentVentasCumplidas)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Cartera de Clientes</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatInteger(totalClientes)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Activados</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatInteger(totalClientesActivados)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Cumplimiento de Clientes</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatPercent(percentClientesActivados)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Presupuesto de Cobros</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatNumber(totalPresupuestoCobros)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Cobrado</p>
           <p className="text-2xl font-semibold text-gray-900">
             {formatNumber(totalCobrado)}
           </p>
         </div>
-      </section>
 
-      <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-gray-700">Supervisor</span>
-            <select
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
-              value={supervisorFilter}
-              onChange={(event) => setSupervisorFilter(event.target.value)}
-            >
-              <option value={ALL_OPTION}>Todos</option>
-              {uniqueSupervisores.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-gray-700">Vendedor</span>
-            <select
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
-              value={vendedorFilter}
-              onChange={(event) => setVendedorFilter(event.target.value)}
-            >
-              <option value={ALL_OPTION}>Todos</option>
-              {uniqueVendedores.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-gray-700">Región</span>
-            <select
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
-              value={regionFilter}
-              onChange={(event) => setRegionFilter(event.target.value)}
-            >
-              <option value={ALL_OPTION}>Todas</option>
-              {uniqueRegiones.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-gray-700">Búsqueda rápida</span>
-            <input
-              className="rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-500"
-              value={searchText}
-              onChange={(event) => setSearchText(event.target.value)}
-              placeholder="Supervisor, vendedor o región"
-            />
-          </label>
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Cumplimiento de Cobros</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatPercent(percentCobrosCumplidas)}
+          </p>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black"
-            onClick={exportCurrentExcel}
-            disabled={filteredRows.length === 0}
-          >
-            Exportar Excel (vista actual)
-          </button>
-          <button
-            type="button"
-            className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black"
-            onClick={exportCurrentPdf}
-            disabled={filteredRows.length === 0}
-          >
-            Exportar PDF (vista actual)
-          </button>
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-            onClick={() => {
-              setSupervisorFilter(ALL_OPTION);
-              setVendedorFilter(ALL_OPTION);
-              setRegionFilter(ALL_OPTION);
-              setSearchText("");
-            }}
-          >
-            Limpiar filtros
-          </button>
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Promedio de Marcas</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatInteger(avgMarcasActivadas)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Renglones Importados</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatInteger(totalRenglonesImportados)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Renglones Nacionales</p>
+          <p className="text-2xl font-semibold text-gray-900">
+            {formatInteger(totalRenglonesNacionales)}
+          </p>
         </div>
       </section>
 
-      <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      {/* Sección de filtros original eliminada: elementos movidos arriba de la tabla (Región y Búsqueda rápida omitidas) */}
+
+      <section className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <label className="text-sm font-medium text-gray-700" htmlFor="group-by">
+          <label
+            className="text-sm font-medium text-gray-700"
+            htmlFor="group-by"
+          >
             Exportación por lote:
           </label>
           <select
             id="group-by"
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800"
+            className="rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-800"
             value={groupBy}
             onChange={(event) => setGroupBy(event.target.value as GroupByKey)}
           >
@@ -540,7 +603,7 @@ export default function Home() {
           </select>
           <button
             type="button"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+            className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
             onClick={() => exportBatch("xlsx")}
             disabled={isExportingBatch || rows.length === 0}
           >
@@ -548,7 +611,7 @@ export default function Home() {
           </button>
           <button
             type="button"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+            className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
             onClick={() => exportBatch("pdf")}
             disabled={isExportingBatch || rows.length === 0}
           >
@@ -562,18 +625,85 @@ export default function Home() {
 
       <section className="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-200 px-4 py-3">
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-            onClick={toggleAllSupervisors}
-            disabled={pivotRows.length === 0}
-          >
-            {areAllExpanded ? "Colapsar todo" : "Expandir todo"}
-          </button>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                onClick={toggleAllSupervisors}
+                disabled={pivotRows.length === 0}
+              >
+                {areAllExpanded ? "Colapsar todo" : "Expandir todo"}
+              </button>
+
+              <label className="flex items-center gap-2 text-sm">
+                <span className="font-medium text-gray-700">Supervisor</span>
+                <select
+                  className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
+                  value={supervisorFilter}
+                  onChange={(event) => setSupervisorFilter(event.target.value)}
+                >
+                  <option value={ALL_OPTION}>Todos</option>
+                  {uniqueSupervisores.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="flex items-center gap-2 text-sm">
+                <span className="font-medium text-gray-700">Vendedor</span>
+                <select
+                  className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
+                  value={vendedorFilter}
+                  onChange={(event) => setVendedorFilter(event.target.value)}
+                >
+                  <option value={ALL_OPTION}>Todos</option>
+                  {uniqueVendedores.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                onClick={() => {
+                  setSupervisorFilter(ALL_OPTION);
+                  setVendedorFilter(ALL_OPTION);
+                  setRegionFilter(ALL_OPTION);
+                  setSearchText("");
+                }}
+              >
+                Limpiar filtros
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800"
+                onClick={exportCurrentExcel}
+                disabled={filteredRows.length === 0}
+              >
+                Exportar Excel (vista actual)
+              </button>
+              <button
+                type="button"
+                className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800"
+                onClick={exportCurrentPdf}
+                disabled={filteredRows.length === 0}
+              >
+                Exportar PDF (vista actual)
+              </button>
+            </div>
+          </div>
         </div>
         <div className="overflow-visible">
           <table className="min-w-full border-collapse text-xs">
-            <thead className="sticky top-0 z-20 bg-gray-900 text-white">
+            <thead className="sticky top-0 z-20 bg-gray-500 text-gray-50">
               <tr>
                 <th
                   rowSpan={2}
@@ -663,10 +793,14 @@ export default function Home() {
                 </tr>
               ) : (
                 pivotRows.flatMap((group) => {
-                  const isExpanded = expandedSupervisors[group.supervisor] === true;
+                  const isExpanded =
+                    expandedSupervisors[group.supervisor] === true;
 
                   const supervisorRow = (
-                    <tr key={`group-${group.supervisor}`} className="bg-slate-100">
+                    <tr
+                      key={`group-${group.supervisor}`}
+                      className="bg-slate-100"
+                    >
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
                         <button
                           type="button"
@@ -694,8 +828,8 @@ export default function Home() {
                         {formatPercent(
                           calculateCompliance(
                             group.totals.VENDIDO,
-                            group.totals.PRESUPUESTO_VENTAS
-                          )
+                            group.totals.PRESUPUESTO_VENTAS,
+                          ),
                         )}
                       </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
@@ -708,8 +842,8 @@ export default function Home() {
                         {formatPercent(
                           calculateCompliance(
                             group.totals.CLIENTES_ACTIVADOS,
-                            group.totals.CLIENTES
-                          )
+                            group.totals.CLIENTES,
+                          ),
                         )}
                       </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
@@ -722,8 +856,8 @@ export default function Home() {
                         {formatPercent(
                           calculateCompliance(
                             group.totals.COBRADO,
-                            group.totals.PRESUPUESTO_COBROS
-                          )
+                            group.totals.PRESUPUESTO_COBROS,
+                          ),
                         )}
                       </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
@@ -745,7 +879,7 @@ export default function Home() {
                   const vendorRows = group.vendors.map((vendorGroup) => (
                     <tr
                       key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
-                      className="bg-white even:bg-gray-50"
+                      className="bg-gray-50 even:bg-gray-100"
                     >
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
                         {toTitleCase(vendorGroup.vendor)}
@@ -760,8 +894,8 @@ export default function Home() {
                         {formatPercent(
                           calculateCompliance(
                             vendorGroup.totals.VENDIDO,
-                            vendorGroup.totals.PRESUPUESTO_VENTAS
-                          )
+                            vendorGroup.totals.PRESUPUESTO_VENTAS,
+                          ),
                         )}
                       </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
@@ -774,8 +908,8 @@ export default function Home() {
                         {formatPercent(
                           calculateCompliance(
                             vendorGroup.totals.CLIENTES_ACTIVADOS,
-                            vendorGroup.totals.CLIENTES
-                          )
+                            vendorGroup.totals.CLIENTES,
+                          ),
                         )}
                       </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
@@ -788,8 +922,8 @@ export default function Home() {
                         {formatPercent(
                           calculateCompliance(
                             vendorGroup.totals.COBRADO,
-                            vendorGroup.totals.PRESUPUESTO_COBROS
-                          )
+                            vendorGroup.totals.PRESUPUESTO_COBROS,
+                          ),
                         )}
                       </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
