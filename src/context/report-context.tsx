@@ -1,0 +1,85 @@
+"use client";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
+import type { ReportRowRaw } from "../lib/report-utils";
+import { ALL_OPTION } from "../lib/report-utils";
+
+type ReportContextValue = {
+  rows: ReportRowRaw[];
+  isLoading: boolean;
+  error: string | null;
+  supervisorFilter: string;
+  setSupervisorFilter: (v: string) => void;
+  vendedorFilter: string;
+  setVendedorFilter: (v: string) => void;
+  regionFilter: string;
+  setRegionFilter: (v: string) => void;
+  searchText: string;
+  setSearchText: (v: string) => void;
+  ALL_OPTION: string;
+};
+
+const ReportContext = createContext<ReportContextValue | undefined>(undefined);
+
+export function ReportProvider({ children }: { children: React.ReactNode }) {
+  const [rows, setRows] = useState<ReportRowRaw[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [supervisorFilter, setSupervisorFilter] = useState(ALL_OPTION);
+  const [vendedorFilter, setVendedorFilter] = useState(ALL_OPTION);
+  const [regionFilter, setRegionFilter] = useState(ALL_OPTION);
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadData() {
+      try {
+        const response = await fetch("/report.json");
+        if (!response.ok) throw new Error("No se pudo cargar report.json");
+        const data = (await response.json()) as ReportRowRaw[];
+        if (isMounted) setRows(data);
+      } catch {
+        if (isMounted)
+          setError(
+            "No se pudo cargar el archivo report.json. Verifica que exista en /public.",
+          );
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const value: ReportContextValue = {
+    rows,
+    isLoading,
+    error,
+    supervisorFilter,
+    setSupervisorFilter,
+    vendedorFilter,
+    setVendedorFilter,
+    regionFilter,
+    setRegionFilter,
+    searchText,
+    setSearchText,
+    ALL_OPTION,
+  };
+
+  return (
+    <ReportContext.Provider value={value}>{children}</ReportContext.Provider>
+  );
+}
+
+export function useReportContext() {
+  const ctx = useContext(ReportContext);
+  if (!ctx)
+    throw new Error("useReportContext must be used within ReportProvider");
+  return ctx;
+}
