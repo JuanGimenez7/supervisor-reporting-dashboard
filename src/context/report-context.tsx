@@ -33,17 +33,18 @@ export function ReportProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
+    const report = "report-20-04.json";
 
     async function loadData() {
       try {
-        const response = await fetch("/report.json");
-        if (!response.ok) throw new Error("No se pudo cargar report.json");
+        const response = await fetch(`/${report}`);
+        if (!response.ok) throw new Error(`No se pudo cargar ${report}`);
         const data = (await response.json()) as ReportRowRaw[];
         if (isMounted) setRows(data);
       } catch {
         if (isMounted)
           setError(
-            "No se pudo cargar el archivo report.json. Verifica que exista en /public.",
+            `No se pudo cargar el archivo ${report}. Verifica que exista en /public.`,
           );
       } finally {
         if (isMounted) setIsLoading(false);

@@ -324,7 +324,7 @@ export default function FiltersAndTable() {
                 );
                 const clientesCumplidoSuper = calculateCompliance(
                   group.totals.CLIENTES_ACTIVADOS,
-                  group.totals.CLIENTES,
+                  group.totals.CARTERA_CLIENTES,
                 );
                 const cobrosCumplidoSuper = calculateCompliance(
                   group.totals.COBRADO,
@@ -368,7 +368,7 @@ export default function FiltersAndTable() {
                       {formatPercent(ventasCumplidoSuper)}
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                      {formatNumber(group.totals.CLIENTES)}
+                      {formatNumber(group.totals.CARTERA_CLIENTES)}
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.CLIENTES_ACTIVADOS)}
@@ -421,7 +421,7 @@ export default function FiltersAndTable() {
                     );
                     const clientesCumplidoVendor = calculateCompliance(
                       vendorGroup.totals.CLIENTES_ACTIVADOS,
-                      vendorGroup.totals.CLIENTES,
+                      vendorGroup.totals.CARTERA_CLIENTES,
                     );
                     const cobrosCumplidoVendor = calculateCompliance(
                       vendorGroup.totals.COBRADO,
@@ -451,7 +451,7 @@ export default function FiltersAndTable() {
                           {formatPercent(ventasCumplidoVendor)}
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                          {formatNumber(vendorGroup.totals.CLIENTES)}
+                          {formatNumber(vendorGroup.totals.CARTERA_CLIENTES)}
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.CLIENTES_ACTIVADOS)}

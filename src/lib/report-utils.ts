@@ -8,7 +8,7 @@ export type ReportRowRaw = {
   VENDEDOR: string;
   PRESUPUESTO_VENTAS: string;
   VENDIDO: string;
-  CLIENTES: string;
+  CARTERA_CLIENTES: string;
   CLIENTES_ACTIVADOS: string;
   PRESUPUESTO_COBROS: string;
   COBRADO: string;
@@ -23,7 +23,7 @@ export const COLUMN_ORDER: Array<keyof ReportRowRaw> = [
   "VENDEDOR",
   "PRESUPUESTO_VENTAS",
   "VENDIDO",
-  "CLIENTES",
+  "CARTERA_CLIENTES",
   "CLIENTES_ACTIVADOS",
   "PRESUPUESTO_COBROS",
   "COBRADO",
@@ -35,7 +35,7 @@ export const COLUMN_ORDER: Array<keyof ReportRowRaw> = [
 export const NUMERIC_COLUMNS = [
   "PRESUPUESTO_VENTAS",
   "VENDIDO",
-  "CLIENTES",
+  "CARTERA_CLIENTES",
   "CLIENTES_ACTIVADOS",
   "PRESUPUESTO_COBROS",
   "COBRADO",
@@ -54,7 +54,7 @@ export function createEmptyTotals(): NumericTotals {
   return {
     PRESUPUESTO_VENTAS: 0,
     VENDIDO: 0,
-    CLIENTES: 0,
+    CARTERA_CLIENTES: 0,
     CLIENTES_ACTIVADOS: 0,
     PRESUPUESTO_COBROS: 0,
     COBRADO: 0,

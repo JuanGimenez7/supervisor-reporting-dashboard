@@ -3,7 +3,7 @@
 ## Resumen del Proyecto
 - **Proyecto**: `supervisor-reporting-dashboard`
 - **Stack**: Next.js 16 (App Router), TypeScript, Tailwind CSS
-- **Fuente de datos**: Archivo JSON estático (`public/report.json`)
+- **Fuente de datos**: Archivo JSON estático (`public/report-[dd-mm].json`)
 - **Objetivo principal**: Dashboard filtrable de ventas/reporte por supervisor
 - **Exportaciones**: PDF y Excel para vista filtrada y lotes agrupados
 - **Destino de despliegue**: Netlify (export estático)
@@ -37,13 +37,13 @@ Si una funcionalidad solicitada requiere backend, explicar trade-offs y pedir ap
 - No asumir unicidad de esas dimensiones para lógica de UI, filtros o exportación.
 - Cuando se necesiten opciones de filtro, construir catálogos con valores únicos derivados del dataset (sin alterar las filas originales).
 - Cuando se necesiten agregaciones, agrupar explícitamente por la dimensión seleccionada (`SUPERVISOR`, `VENDEDOR`, `REGION`).
-- Contrato actual del dataset (`public/report.json`):
+- Contrato actual del dataset (`public/report-[dd-mm].json`):
   - `SUPERVISOR` (string)
   - `REGION` (string)
   - `VENDEDOR` (string)
   - `PRESUPUESTO_VENTAS` (numeric string)
   - `VENDIDO` (numeric string)
-  - `CLIENTES` (numeric string)
+  - `CARTERA_CLIENTES` (numeric string)
   - `CLIENTES_ACTIVADOS` (numeric string)
   - `PRESUPUESTO_COBROS` (numeric string)
   - `COBRADO` (numeric string)
@@ -52,7 +52,7 @@ Si una funcionalidad solicitada requiere backend, explicar trade-offs y pedir ap
   - `RENGLONES_NACIONALES` (numeric string)
 - Los campos numéricos actualmente vienen como strings en el JSON y deben parsearse antes de cálculos/agregaciones/exportaciones.
 - Mantener compatibilidad con la fuente cruda:
-  - No renombrar las claves crudas dentro de `report.json`.
+  - No renombrar las claves crudas dentro de `report-[dd-mm].json`.
   - Si hace falta, mapear claves crudas a claves internas en un helper de transformación dedicado.
 - Reglas de normalización para parseo numérico:
   - Aplicar `trim` a espacios.

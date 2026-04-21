@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header className="w-full rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
       <h1 className="text-xl font-bold text-gray-900 lg:text-2xl">
-        Dashboard de Supervisores
+        Dashboard de Supervisores y Vendedores - Reporte del 20 de Abril
       </h1>
       <div className="mt-3 text-sm text-gray-700">
         <div className="font-medium">Leyenda del semáforo (Cumplimiento)</div>

@@ -76,7 +76,7 @@ export default function ConsolidatedSummary() {
   const totalClientes = useMemo(
     () =>
       filteredRows.reduce(
-        (acc, row) => acc + parseNumericValue(row.CLIENTES),
+        (acc, row) => acc + parseNumericValue(row.CARTERA_CLIENTES),
         0,
       ),
     [filteredRows],
