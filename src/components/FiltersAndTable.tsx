@@ -332,10 +332,7 @@ export default function FiltersAndTable() {
                 );
 
                 const supervisorRow = (
-                  <tr
-                    key={`group-${group.supervisor}`}
-                    className="bg-slate-100"
-                  >
+                  <tr key={`group-${group.supervisor}`} className="bg-gray-100">
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
                       <button
                         type="button"
@@ -431,7 +428,7 @@ export default function FiltersAndTable() {
                     return (
                       <tr
                         key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
-                        className="bg-gray-50 even:bg-gray-100"
+                        className="bg-white"
                       >
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
                           {vendorGroup.vendor}
