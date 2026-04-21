@@ -17,6 +17,7 @@ import {
   ReportRowRaw,
   NumericTotals,
 } from "../lib/report-utils";
+import { getSemaforoClass } from "../lib/semaforo";
 
 export default function FiltersAndTable() {
   const {
@@ -316,6 +317,19 @@ export default function FiltersAndTable() {
                 const isExpanded =
                   expandedSupervisors[group.supervisor] === true;
 
+                const ventasCumplidoSuper = calculateCompliance(
+                  group.totals.VENDIDO,
+                  group.totals.PRESUPUESTO_VENTAS,
+                );
+                const clientesCumplidoSuper = calculateCompliance(
+                  group.totals.CLIENTES_ACTIVADOS,
+                  group.totals.CLIENTES,
+                );
+                const cobrosCumplidoSuper = calculateCompliance(
+                  group.totals.COBRADO,
+                  group.totals.PRESUPUESTO_COBROS,
+                );
+
                 const supervisorRow = (
                   <tr
                     key={`group-${group.supervisor}`}
@@ -344,13 +358,13 @@ export default function FiltersAndTable() {
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.VENDIDO)}
                     </td>
-                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                      {formatPercent(
-                        calculateCompliance(
-                          group.totals.VENDIDO,
-                          group.totals.PRESUPUESTO_VENTAS,
-                        ),
-                      )}
+                    <td
+                      className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900 ${getSemaforoClass(
+                        "ventas",
+                        ventasCumplidoSuper,
+                      )}`}
+                    >
+                      {formatPercent(ventasCumplidoSuper)}
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.CLIENTES)}
@@ -358,13 +372,13 @@ export default function FiltersAndTable() {
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.CLIENTES_ACTIVADOS)}
                     </td>
-                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                      {formatPercent(
-                        calculateCompliance(
-                          group.totals.CLIENTES_ACTIVADOS,
-                          group.totals.CLIENTES,
-                        ),
-                      )}
+                    <td
+                      className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900 ${getSemaforoClass(
+                        "clientes",
+                        clientesCumplidoSuper,
+                      )}`}
+                    >
+                      {formatPercent(clientesCumplidoSuper)}
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.PRESUPUESTO_COBROS)}
@@ -372,13 +386,13 @@ export default function FiltersAndTable() {
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.COBRADO)}
                     </td>
-                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                      {formatPercent(
-                        calculateCompliance(
-                          group.totals.COBRADO,
-                          group.totals.PRESUPUESTO_COBROS,
-                        ),
-                      )}
+                    <td
+                      className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900 ${getSemaforoClass(
+                        "cobros",
+                        cobrosCumplidoSuper,
+                      )}`}
+                    >
+                      {formatPercent(cobrosCumplidoSuper)}
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatInteger(group.promedioMarcasActivadas)}
@@ -399,67 +413,86 @@ export default function FiltersAndTable() {
                     vendor: string;
                     totals: NumericTotals;
                     promedioMarcasActivadas: number;
-                  }) => (
-                    <tr
-                      key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
-                      className="bg-gray-50 even:bg-gray-100"
-                    >
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
-                        {vendorGroup.vendor}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.PRESUPUESTO_VENTAS)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.VENDIDO)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatPercent(
-                          calculateCompliance(
-                            vendorGroup.totals.VENDIDO,
-                            vendorGroup.totals.PRESUPUESTO_VENTAS,
-                          ),
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.CLIENTES)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.CLIENTES_ACTIVADOS)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatPercent(
-                          calculateCompliance(
-                            vendorGroup.totals.CLIENTES_ACTIVADOS,
-                            vendorGroup.totals.CLIENTES,
-                          ),
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.PRESUPUESTO_COBROS)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.COBRADO)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatPercent(
-                          calculateCompliance(
-                            vendorGroup.totals.COBRADO,
-                            vendorGroup.totals.PRESUPUESTO_COBROS,
-                          ),
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatInteger(vendorGroup.promedioMarcasActivadas)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.RENGLONES_IMPORTADOS)}
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                        {formatNumber(vendorGroup.totals.RENGLONES_NACIONALES)}
-                      </td>
-                    </tr>
-                  ),
+                  }) => {
+                    const ventasCumplidoVendor = calculateCompliance(
+                      vendorGroup.totals.VENDIDO,
+                      vendorGroup.totals.PRESUPUESTO_VENTAS,
+                    );
+                    const clientesCumplidoVendor = calculateCompliance(
+                      vendorGroup.totals.CLIENTES_ACTIVADOS,
+                      vendorGroup.totals.CLIENTES,
+                    );
+                    const cobrosCumplidoVendor = calculateCompliance(
+                      vendorGroup.totals.COBRADO,
+                      vendorGroup.totals.PRESUPUESTO_COBROS,
+                    );
+
+                    return (
+                      <tr
+                        key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
+                        className="bg-gray-50 even:bg-gray-100"
+                      >
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
+                          {vendorGroup.vendor}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(vendorGroup.totals.PRESUPUESTO_VENTAS)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(vendorGroup.totals.VENDIDO)}
+                        </td>
+                        <td
+                          className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800 ${getSemaforoClass(
+                            "ventas",
+                            ventasCumplidoVendor,
+                          )}`}
+                        >
+                          {formatPercent(ventasCumplidoVendor)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(vendorGroup.totals.CLIENTES)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(vendorGroup.totals.CLIENTES_ACTIVADOS)}
+                        </td>
+                        <td
+                          className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800 ${getSemaforoClass(
+                            "clientes",
+                            clientesCumplidoVendor,
+                          )}`}
+                        >
+                          {formatPercent(clientesCumplidoVendor)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(vendorGroup.totals.PRESUPUESTO_COBROS)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(vendorGroup.totals.COBRADO)}
+                        </td>
+                        <td
+                          className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800 ${getSemaforoClass(
+                            "cobros",
+                            cobrosCumplidoVendor,
+                          )}`}
+                        >
+                          {formatPercent(cobrosCumplidoVendor)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatInteger(vendorGroup.promedioMarcasActivadas)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(
+                            vendorGroup.totals.RENGLONES_IMPORTADOS,
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(
+                            vendorGroup.totals.RENGLONES_NACIONALES,
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  },
                 );
 
                 return [supervisorRow, ...vendorRows];
