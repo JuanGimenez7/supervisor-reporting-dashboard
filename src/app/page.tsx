@@ -38,7 +38,7 @@ const COLUMN_ORDER: Array<keyof ReportRowRaw> = [
   "RENGLONES_NACIONALES",
 ];
 
-const NUMERIC_COLUMNS: Array<keyof ReportRowRaw> = [
+const NUMERIC_COLUMNS = [
   "PRESUPUESTO_VENTAS",
   "VENDIDO",
   "CLIENTES",
@@ -48,9 +48,48 @@ const NUMERIC_COLUMNS: Array<keyof ReportRowRaw> = [
   "MARCAS_ACTIVADAS",
   "RENGLONES_IMPORTADOS",
   "RENGLONES_NACIONALES",
-];
+] as const;
+
+type NumericColumn = (typeof NUMERIC_COLUMNS)[number];
+type NumericTotals = Record<NumericColumn, number>;
 
 const ALL_OPTION = "__ALL__";
+const LEAF_COLUMN_COUNT = 13;
+
+function createEmptyTotals(): NumericTotals {
+  return {
+    PRESUPUESTO_VENTAS: 0,
+    VENDIDO: 0,
+    CLIENTES: 0,
+    CLIENTES_ACTIVADOS: 0,
+    PRESUPUESTO_COBROS: 0,
+    COBRADO: 0,
+    MARCAS_ACTIVADAS: 0,
+    RENGLONES_IMPORTADOS: 0,
+    RENGLONES_NACIONALES: 0,
+  };
+}
+
+function aggregateTotals(rows: ReportRowRaw[]): NumericTotals {
+  return rows.reduce<NumericTotals>((acc, row) => {
+    for (const column of NUMERIC_COLUMNS) {
+      acc[column] += parseNumericValue(row[column]);
+    }
+    return acc;
+  }, createEmptyTotals());
+}
+
+function calculateAverageValue(
+  rows: ReportRowRaw[],
+  column: keyof ReportRowRaw
+): number {
+  if (rows.length === 0) {
+    return 0;
+  }
+
+  const total = rows.reduce((acc, row) => acc + parseNumericValue(row[column]), 0);
+  return total / rows.length;
+}
 
 function parseNumericValue(value: string): number {
   const normalized = value.replace(/[^\d.-]/g, "").trim();
@@ -62,6 +101,21 @@ function formatNumber(value: number): string {
   return new Intl.NumberFormat("es-VE").format(value);
 }
 
+function formatInteger(value: number): string {
+  return formatNumber(Math.round(value));
+}
+
+function calculateCompliance(numerator: number, denominator: number): number {
+  if (denominator <= 0) {
+    return 0;
+  }
+  return (numerator / denominator) * 100;
+}
+
+function formatPercent(value: number): string {
+  return `${Math.round(value)}%`;
+}
+
 function slugify(value: string): string {
   return value
     .toLowerCase()
@@ -69,6 +123,14 @@ function slugify(value: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function toTitleCase(value: string): string {
+  if (!value) return value;
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/(^|[\s\-'])\S/g, (match) => match.toUpperCase());
 }
 
 function buildExcelBuffer(rows: ReportRowRaw[]): ArrayBuffer {
@@ -121,6 +183,9 @@ export default function Home() {
   const [searchText, setSearchText] = useState("");
   const [groupBy, setGroupBy] = useState<GroupByKey>("SUPERVISOR");
   const [isExportingBatch, setIsExportingBatch] = useState(false);
+  const [expandedSupervisors, setExpandedSupervisors] = useState<
+    Record<string, boolean>
+  >({});
 
   useEffect(() => {
     let isMounted = true;
@@ -204,6 +269,53 @@ export default function Home() {
     [filteredRows]
   );
 
+  const pivotRows = useMemo(() => {
+    const supervisorMap = new Map<string, ReportRowRaw[]>();
+
+    for (const row of filteredRows) {
+      const supervisorRows = supervisorMap.get(row.SUPERVISOR) ?? [];
+      supervisorRows.push(row);
+      supervisorMap.set(row.SUPERVISOR, supervisorRows);
+    }
+
+    return Array.from(supervisorMap.entries())
+      .sort(([supervisorA], [supervisorB]) =>
+        supervisorA.localeCompare(supervisorB)
+      )
+      .map(([supervisor, supervisorRows]) => {
+        const vendorMap = new Map<string, ReportRowRaw[]>();
+
+        for (const row of supervisorRows) {
+          const vendorRows = vendorMap.get(row.VENDEDOR) ?? [];
+          vendorRows.push(row);
+          vendorMap.set(row.VENDEDOR, vendorRows);
+        }
+
+        const vendors = Array.from(vendorMap.entries())
+          .sort(([vendorA], [vendorB]) => vendorA.localeCompare(vendorB))
+          .map(([vendor, vendorRows]) => {
+            return {
+              vendor,
+              totals: aggregateTotals(vendorRows),
+              promedioMarcasActivadas: calculateAverageValue(
+                vendorRows,
+                "MARCAS_ACTIVADAS"
+              ),
+            };
+          });
+
+        return {
+          supervisor,
+          totals: aggregateTotals(supervisorRows),
+          promedioMarcasActivadas: calculateAverageValue(
+            supervisorRows,
+            "MARCAS_ACTIVADAS"
+          ),
+          vendors,
+        };
+      });
+  }, [filteredRows]);
+
   function exportCurrentExcel() {
     const buffer = buildExcelBuffer(filteredRows);
     triggerDownload(buffer, "reporte-filtrado.xlsx");
@@ -248,6 +360,30 @@ export default function Home() {
     }
   }
 
+  function toggleSupervisor(supervisor: string) {
+    setExpandedSupervisors((current) => ({
+      ...current,
+      [supervisor]: !current[supervisor],
+    }));
+  }
+
+  const areAllExpanded = useMemo(
+    () =>
+      pivotRows.length > 0 &&
+      pivotRows.every((group) => expandedSupervisors[group.supervisor] === true),
+    [pivotRows, expandedSupervisors]
+  );
+
+  function toggleAllSupervisors() {
+    setExpandedSupervisors(() => {
+      const nextValue = !areAllExpanded;
+      return pivotRows.reduce<Record<string, boolean>>((acc, group) => {
+        acc[group.supervisor] = nextValue;
+        return acc;
+      }, {});
+    });
+  }
+
   if (isLoading) {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center p-6">
@@ -265,13 +401,13 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-4 p-4 md:p-6">
+    <main className="mx-auto flex min-h-screen w-full max-w-9xl flex-col gap-4 p-4 md:p-6">
       <header className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <h1 className="text-xl font-bold text-gray-900 md:text-2xl">
           Dashboard de Supervisión
         </h1>
         <p className="mt-1 text-sm text-gray-600">
-          Filtra por supervisor, vendedor y región. Exporta el resultado actual o
+          Filtra por supervisor vendedor. Exporta el resultado actual o
           genera archivos por lote.
         </p>
       </header>
@@ -424,53 +560,252 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div className="max-h-[60vh] overflow-auto">
-          <table className="min-w-full border-collapse text-sm">
-            <thead className="sticky top-0 z-10 bg-gray-900 text-white">
+      <section className="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="border-b border-gray-200 px-4 py-3">
+          <button
+            type="button"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+            onClick={toggleAllSupervisors}
+            disabled={pivotRows.length === 0}
+          >
+            {areAllExpanded ? "Colapsar todo" : "Expandir todo"}
+          </button>
+        </div>
+        <div className="overflow-visible">
+          <table className="min-w-full border-collapse text-xs">
+            <thead className="sticky top-0 z-20 bg-gray-900 text-white">
               <tr>
-                {COLUMN_ORDER.map((column) => (
-                  <th
-                    key={column}
-                    className="whitespace-nowrap border border-gray-700 px-3 py-2 text-left font-semibold"
-                  >
-                    {column}
-                  </th>
-                ))}
+                <th
+                  rowSpan={2}
+                  className="whitespace-nowrap border border-gray-700 px-3 py-2 text-left font-semibold"
+                >
+                  SUPERVISOR / VENDEDOR
+                </th>
+                <th
+                  colSpan={3}
+                  className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
+                >
+                  VENTAS
+                </th>
+                <th
+                  colSpan={3}
+                  className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
+                >
+                  CLIENTES
+                </th>
+                <th
+                  colSpan={3}
+                  className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
+                >
+                  COBROS
+                </th>
+                <th
+                  colSpan={1}
+                  className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
+                >
+                  MARCAS
+                </th>
+                <th
+                  colSpan={2}
+                  className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
+                >
+                  RENGLONES
+                </th>
+              </tr>
+              <tr>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  PRESUPUESTO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  VENDIDO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  CUMPLIDO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  CARTERA
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  ACTIVADOS
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  CUMPLIDO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  PRESUPUESTO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  COBRADO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  CUMPLIDO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  PROMEDIO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  IMPORTADOS
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  NACIONALES
+                </th>
               </tr>
             </thead>
             <tbody>
-              {filteredRows.length === 0 ? (
+              {pivotRows.length === 0 ? (
                 <tr>
                   <td
                     className="px-3 py-6 text-center text-gray-500"
-                    colSpan={COLUMN_ORDER.length}
+                    colSpan={LEAF_COLUMN_COUNT}
                   >
                     Sin resultados para los filtros seleccionados.
                   </td>
                 </tr>
               ) : (
-                filteredRows.map((row, index) => (
-                  <tr
-                    key={`${row.SUPERVISOR}-${row.VENDEDOR}-${index}`}
-                    className="odd:bg-white even:bg-gray-50"
-                  >
-                    {COLUMN_ORDER.map((column) => {
-                      const value = row[column];
-                      const isNumericColumn = NUMERIC_COLUMNS.includes(column);
-                      return (
-                        <td
-                          key={`${column}-${index}`}
-                          className="whitespace-nowrap border border-gray-200 px-3 py-2 text-gray-800"
+                pivotRows.flatMap((group) => {
+                  const isExpanded = expandedSupervisors[group.supervisor] === true;
+
+                  const supervisorRow = (
+                    <tr key={`group-${group.supervisor}`} className="bg-slate-100">
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-2 rounded px-1 py-0.5 hover:bg-slate-200"
+                          onClick={() => toggleSupervisor(group.supervisor)}
+                          aria-label={
+                            isExpanded
+                              ? `Ocultar vendedores de ${toTitleCase(group.supervisor)}`
+                              : `Mostrar vendedores de ${toTitleCase(group.supervisor)}`
+                          }
                         >
-                          {isNumericColumn
-                            ? formatNumber(parseNumericValue(value))
-                            : value}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))
+                          <span className="inline-block w-4 text-center">
+                            {isExpanded ? "−" : "+"}
+                          </span>
+                          <span>{toTitleCase(group.supervisor)}</span>
+                        </button>
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.PRESUPUESTO_VENTAS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.VENDIDO)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatPercent(
+                          calculateCompliance(
+                            group.totals.VENDIDO,
+                            group.totals.PRESUPUESTO_VENTAS
+                          )
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.CLIENTES)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.CLIENTES_ACTIVADOS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatPercent(
+                          calculateCompliance(
+                            group.totals.CLIENTES_ACTIVADOS,
+                            group.totals.CLIENTES
+                          )
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.PRESUPUESTO_COBROS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.COBRADO)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatPercent(
+                          calculateCompliance(
+                            group.totals.COBRADO,
+                            group.totals.PRESUPUESTO_COBROS
+                          )
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatInteger(group.promedioMarcasActivadas)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.RENGLONES_IMPORTADOS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                        {formatNumber(group.totals.RENGLONES_NACIONALES)}
+                      </td>
+                    </tr>
+                  );
+
+                  if (!isExpanded) {
+                    return [supervisorRow];
+                  }
+
+                  const vendorRows = group.vendors.map((vendorGroup) => (
+                    <tr
+                      key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
+                      className="bg-white even:bg-gray-50"
+                    >
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
+                        {toTitleCase(vendorGroup.vendor)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.PRESUPUESTO_VENTAS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.VENDIDO)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatPercent(
+                          calculateCompliance(
+                            vendorGroup.totals.VENDIDO,
+                            vendorGroup.totals.PRESUPUESTO_VENTAS
+                          )
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.CLIENTES)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.CLIENTES_ACTIVADOS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatPercent(
+                          calculateCompliance(
+                            vendorGroup.totals.CLIENTES_ACTIVADOS,
+                            vendorGroup.totals.CLIENTES
+                          )
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.PRESUPUESTO_COBROS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.COBRADO)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatPercent(
+                          calculateCompliance(
+                            vendorGroup.totals.COBRADO,
+                            vendorGroup.totals.PRESUPUESTO_COBROS
+                          )
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatInteger(vendorGroup.promedioMarcasActivadas)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.RENGLONES_IMPORTADOS)}
+                      </td>
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                        {formatNumber(vendorGroup.totals.RENGLONES_NACIONALES)}
+                      </td>
+                    </tr>
+                  ));
+
+                  return [supervisorRow, ...vendorRows];
+                })
               )}
             </tbody>
           </table>
