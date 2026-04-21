@@ -90,6 +90,8 @@ export default function FiltersAndTable() {
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([vendor, vendorRows]) => ({
             vendor,
+            rows: vendorRows,
+            region: vendorRows[0]?.REGION ?? "",
             totals: aggregateTotals(vendorRows),
             promedioMarcasActivadas: calculateAverageValue(
               vendorRows,
@@ -108,6 +110,31 @@ export default function FiltersAndTable() {
         };
       });
   }, [filteredRows]);
+
+  const [selectedVendor, setSelectedVendor] = useState<{
+    vendor: string;
+    supervisor: string;
+    region: string;
+    rows: ReportRowRaw[];
+    totals: NumericTotals;
+    promedioMarcasActivadas: number;
+  } | null>(null);
+
+  function closeVendorModal() {
+    setSelectedVendor(null);
+  }
+
+  function exportVendorExcel(vendorRows: ReportRowRaw[], vendorName: string) {
+    const buffer = buildExcelBuffer(vendorRows);
+    const safeName = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    triggerDownload(buffer, `vendedor-${safeName}.xlsx`);
+  }
+
+  function exportVendorPdf(vendorRows: ReportRowRaw[], vendorName: string) {
+    const blob = buildPdfBlob(vendorRows, `Boleta - ${vendorName}`);
+    const safeName = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    triggerDownload(blob, `vendedor-${safeName}.pdf`);
+  }
 
   function toggleSupervisor(supervisor: string) {
     setExpandedSupervisors((current) => ({
@@ -409,6 +436,8 @@ export default function FiltersAndTable() {
                 const vendorRows = group.vendors.map(
                   (vendorGroup: {
                     vendor: string;
+                    rows: ReportRowRaw[];
+                    region: string;
                     totals: NumericTotals;
                     promedioMarcasActivadas: number;
                   }) => {
@@ -428,7 +457,33 @@ export default function FiltersAndTable() {
                     return (
                       <tr
                         key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
-                        className="bg-white"
+                        className="bg-white hover:bg-slate-50 cursor-pointer"
+                        onClick={() =>
+                          setSelectedVendor({
+                            vendor: vendorGroup.vendor,
+                            supervisor: group.supervisor,
+                            region: vendorGroup.region,
+                            rows: vendorGroup.rows,
+                            totals: vendorGroup.totals,
+                            promedioMarcasActivadas:
+                              vendorGroup.promedioMarcasActivadas,
+                          })
+                        }
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            setSelectedVendor({
+                              vendor: vendorGroup.vendor,
+                              supervisor: group.supervisor,
+                              region: vendorGroup.region,
+                              rows: vendorGroup.rows,
+                              totals: vendorGroup.totals,
+                              promedioMarcasActivadas:
+                                vendorGroup.promedioMarcasActivadas,
+                            });
+                          }
+                        }}
                       >
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
                           {vendorGroup.vendor}
@@ -499,6 +554,167 @@ export default function FiltersAndTable() {
           </tbody>
         </table>
       </div>
+      {selectedVendor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={closeVendorModal}
+          />
+          <div className="relative w-auto max-w-[540px] rounded border border-gray-300 bg-white p-12 shadow-lg">
+            <button
+              className="absolute top-4 right-4 rounded bg-gray-700 px-2 py-1 text-sm font-medium text-white hover:bg-gray-800"
+              onClick={closeVendorModal}
+              aria-label="Cerrar"
+            >
+              Cerrar
+            </button>
+
+            <div>
+              <h3 className="text-lg font-semibold text-slate-700">
+                {selectedVendor.vendor}
+              </h3>
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <div className="text-sm w-full max-w-[480px]">
+                <div className="space-y-2">
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Supervisor:</span>
+                    <span className="font-medium text-gray-900">
+                      {selectedVendor.supervisor}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Región:</span>
+                    <span className="font-medium text-gray-900">
+                      {selectedVendor.region}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">
+                      Presupuesto de ventas:
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.PRESUPUESTO_VENTAS)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Vendido:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.VENDIDO)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">
+                      Cumplimiento de Ventas:
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {formatPercent(
+                        calculateCompliance(
+                          selectedVendor.totals.VENDIDO,
+                          selectedVendor.totals.PRESUPUESTO_VENTAS,
+                        ),
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Cartera de Clientes:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.CARTERA_CLIENTES)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Clientes Activados:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.CLIENTES_ACTIVADOS)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">
+                      Cumplimiento de Clientes:
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {formatPercent(
+                        calculateCompliance(
+                          selectedVendor.totals.CLIENTES_ACTIVADOS,
+                          selectedVendor.totals.CARTERA_CLIENTES,
+                        ),
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">
+                      Presupuesto de Cobros:
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.PRESUPUESTO_COBROS)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Cobrado:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.COBRADO)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">
+                      Cumplimiento de Cobros:
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {formatPercent(
+                        calculateCompliance(
+                          selectedVendor.totals.COBRADO,
+                          selectedVendor.totals.PRESUPUESTO_COBROS,
+                        ),
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Marcas Activadas:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatInteger(selectedVendor.promedioMarcasActivadas)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Renglones Importados:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.RENGLONES_IMPORTADOS)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Renglones Nacionales:</span>
+                    <span className="font-medium text-gray-900">
+                      {formatNumber(selectedVendor.totals.RENGLONES_NACIONALES)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3 justify-center">
+              <button
+                type="button"
+                className="rounded bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                onClick={() =>
+                  exportVendorPdf(selectedVendor.rows, selectedVendor.vendor)
+                }
+              >
+                Descargar PDF
+              </button>
+              <button
+                type="button"
+                className="rounded bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                onClick={() =>
+                  exportVendorExcel(selectedVendor.rows, selectedVendor.vendor)
+                }
+              >
+                Descargar Excel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
