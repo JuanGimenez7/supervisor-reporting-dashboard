@@ -144,23 +144,23 @@ export default function FiltersAndTable() {
   }
 
   return (
-    <section className="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
+    <section className="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm w-full">
       <div className="border-b border-gray-200 px-4 py-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
             <button
               type="button"
-              className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
               onClick={toggleAllSupervisors}
               disabled={pivotRows.length === 0}
             >
               {areAllExpanded ? "Colapsar todo" : "Expandir todo"}
             </button>
 
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex w-full items-center gap-2 text-sm lg:w-auto">
               <span className="font-medium text-gray-700">Supervisor</span>
               <select
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
                 value={supervisorFilter}
                 onChange={(event) => setSupervisorFilter(event.target.value)}
               >
@@ -173,10 +173,10 @@ export default function FiltersAndTable() {
               </select>
             </label>
 
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex w-full items-center gap-2 text-sm lg:w-auto">
               <span className="font-medium text-gray-700">Vendedor</span>
               <select
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
                 value={vendedorFilter}
                 onChange={(event) => setVendedorFilter(event.target.value)}
               >
@@ -188,9 +188,10 @@ export default function FiltersAndTable() {
                 ))}
               </select>
             </label>
+
             <button
               type="button"
-              className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
               onClick={() => {
                 setSupervisorFilter(ALL_OPTION);
                 setVendedorFilter(ALL_OPTION);
@@ -202,10 +203,10 @@ export default function FiltersAndTable() {
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:w-auto">
             <button
               type="button"
-              className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800"
+              className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
               onClick={exportCurrentExcel}
               disabled={filteredRows.length === 0}
             >
@@ -213,7 +214,7 @@ export default function FiltersAndTable() {
             </button>
             <button
               type="button"
-              className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800"
+              className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
               onClick={exportCurrentPdf}
               disabled={filteredRows.length === 0}
             >
@@ -222,7 +223,7 @@ export default function FiltersAndTable() {
           </div>
         </div>
       </div>
-      <div className="overflow-visible">
+      <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-xs">
           <thead className="sticky top-0 z-20 bg-gray-500 text-gray-50">
             <tr>

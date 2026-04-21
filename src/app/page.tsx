@@ -9,7 +9,7 @@ import FiltersAndTable from "../components/FiltersAndTable";
 export default function Home() {
   return (
     <ReportProvider>
-      <main className="mx-auto flex min-h-screen w-full max-w-9xl flex-col gap-4 p-4 md:p-6">
+      <main className="mx-auto flex min-h-screen w-full flex-col gap-4 p-4 lg:max-w-9xl lg:gap-6 lg:p-6">
         <Header />
         <ConsolidatedSummary />
         <BatchExport />

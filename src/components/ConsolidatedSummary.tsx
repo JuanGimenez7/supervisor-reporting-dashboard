@@ -143,110 +143,150 @@ export default function ConsolidatedSummary() {
   );
 
   return (
-    <section className="grid gap-3 grid-cols-1 md:grid-cols-3">
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Presupuesto de Ventas</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatNumber(totalPresupuestoVentas)}
-        </p>
-      </div>
+    <section className="space-y-3">
+      {/* Group 1: Ventas */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          <span className="text-lg">💰</span>
+          <span>Ventas</span>
+        </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Vendido</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatNumber(totalVendido)}
-        </p>
-      </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Presupuesto de Ventas</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatNumber(totalPresupuestoVentas)}
+            </p>
+          </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Cumplimiento de Ventas</p>
-        <div
-          className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
-            "ventas",
-            percentVentasCumplidas,
-          )}`}
-        >
-          <p className="text-2xl font-semibold text-gray-900 m-0">
-            {formatPercent(percentVentasCumplidas)}
-          </p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Vendido</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatNumber(totalVendido)}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">% Cumplimiento</p>
+            <div
+              className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
+                "ventas",
+                percentVentasCumplidas,
+              )}`}
+            >
+              <p className="text-2xl font-semibold text-gray-900 m-0">
+                {formatPercent(percentVentasCumplidas)}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Cartera de Clientes</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatInteger(totalClientes)}
-        </p>
-      </div>
+      {/* Group 2: Clientes */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          <span className="text-lg">👥</span>
+          <span>Clientes</span>
+        </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Activados</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatInteger(totalClientesActivados)}
-        </p>
-      </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Cartera de Clientes</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatInteger(totalClientes)}
+            </p>
+          </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Cumplimiento de Clientes</p>
-        <div
-          className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
-            "clientes",
-            percentClientesActivados,
-          )}`}
-        >
-          <p className="text-2xl font-semibold text-gray-900 m-0">
-            {formatPercent(percentClientesActivados)}
-          </p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Activados</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatInteger(totalClientesActivados)}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">% Cumplimiento</p>
+            <div
+              className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
+                "clientes",
+                percentClientesActivados,
+              )}`}
+            >
+              <p className="text-2xl font-semibold text-gray-900 m-0">
+                {formatPercent(percentClientesActivados)}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Presupuesto de Cobros</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatNumber(totalPresupuestoCobros)}
-        </p>
-      </div>
+      {/* Group 3: Cobros */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          <span className="text-lg">💵</span>
+          <span>Cobros</span>
+        </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Cobrado</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatNumber(totalCobrado)}
-        </p>
-      </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Presupuesto de Cobros</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatNumber(totalPresupuestoCobros)}
+            </p>
+          </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Cumplimiento de Cobros</p>
-        <div
-          className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
-            "cobros",
-            percentCobrosCumplidas,
-          )}`}
-        >
-          <p className="text-2xl font-semibold text-gray-900 m-0">
-            {formatPercent(percentCobrosCumplidas)}
-          </p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Cobrado</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatNumber(totalCobrado)}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">% Cumplimiento</p>
+            <div
+              className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
+                "cobros",
+                percentCobrosCumplidas,
+              )}`}
+            >
+              <p className="text-2xl font-semibold text-gray-900 m-0">
+                {formatPercent(percentCobrosCumplidas)}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Promedio de Marcas</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatInteger(avgMarcasActivadas)}
-        </p>
-      </div>
+      {/* Group 4: Marcas y Renglones */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          <span className="text-lg">📦</span>
+          <span>Marcas / Renglones</span>
+        </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Renglones Importados</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatInteger(totalRenglonesImportados)}
-        </p>
-      </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Promedio de Marcas</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatInteger(avgMarcasActivadas)}
+            </p>
+          </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-        <p className="text-sm text-gray-500">Renglones Nacionales</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatInteger(totalRenglonesNacionales)}
-        </p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Renglones Importados</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatInteger(totalRenglonesImportados)}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-sm text-gray-500">Renglones Nacionales</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              {formatInteger(totalRenglonesNacionales)}
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

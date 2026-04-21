@@ -56,36 +56,40 @@ export default function BatchExport() {
   }
 
   return (
-    <section className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="text-sm font-medium text-gray-700" htmlFor="group-by">
+    <section className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm w-full">
+      <div className="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center lg:gap-2">
+        <label className="text-sm font-medium text-gray-700">
           Exportación por lote:
         </label>
         <select
           id="group-by"
-          className="rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-800"
+          className="w-full lg:w-auto rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-800"
           value={groupBy}
           onChange={(event) => setGroupBy(event.target.value as GroupByKey)}
         >
           <option value="SUPERVISOR">Por supervisor</option>
           <option value="VENDEDOR">Por vendedor</option>
         </select>
-        <button
-          type="button"
-          className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
-          onClick={() => exportBatch("xlsx")}
-          disabled={isExportingBatch || rows.length === 0}
-        >
-          ZIP Excel
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
-          onClick={() => exportBatch("pdf")}
-          disabled={isExportingBatch || rows.length === 0}
-        >
-          ZIP PDF
-        </button>
+
+        <div className="flex w-full flex-col gap-2 lg:flex-row lg:w-auto lg:gap-2">
+          <button
+            type="button"
+            className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+            onClick={() => exportBatch("xlsx")}
+            disabled={isExportingBatch || rows.length === 0}
+          >
+            ZIP Excel
+          </button>
+          <button
+            type="button"
+            className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+            onClick={() => exportBatch("pdf")}
+            disabled={isExportingBatch || rows.length === 0}
+          >
+            ZIP PDF
+          </button>
+        </div>
+
         {isExportingBatch && (
           <span className="text-sm text-gray-600">Generando ZIP...</span>
         )}
