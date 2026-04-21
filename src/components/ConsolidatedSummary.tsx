@@ -10,6 +10,7 @@ import {
   formatInteger,
   formatPercent,
 } from "../lib/report-utils";
+import { getSemaforoClass } from "../lib/semaforo";
 
 export default function ConsolidatedSummary() {
   const {
@@ -159,9 +160,16 @@ export default function ConsolidatedSummary() {
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
         <p className="text-sm text-gray-500">Cumplimiento de Ventas</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatPercent(percentVentasCumplidas)}
-        </p>
+        <div
+          className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
+            "ventas",
+            percentVentasCumplidas,
+          )}`}
+        >
+          <p className="text-2xl font-semibold text-gray-900 m-0">
+            {formatPercent(percentVentasCumplidas)}
+          </p>
+        </div>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
@@ -180,9 +188,16 @@ export default function ConsolidatedSummary() {
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
         <p className="text-sm text-gray-500">Cumplimiento de Clientes</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatPercent(percentClientesActivados)}
-        </p>
+        <div
+          className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
+            "clientes",
+            percentClientesActivados,
+          )}`}
+        >
+          <p className="text-2xl font-semibold text-gray-900 m-0">
+            {formatPercent(percentClientesActivados)}
+          </p>
+        </div>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
@@ -201,9 +216,16 @@ export default function ConsolidatedSummary() {
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
         <p className="text-sm text-gray-500">Cumplimiento de Cobros</p>
-        <p className="text-2xl font-semibold text-gray-900">
-          {formatPercent(percentCobrosCumplidas)}
-        </p>
+        <div
+          className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
+            "cobros",
+            percentCobrosCumplidas,
+          )}`}
+        >
+          <p className="text-2xl font-semibold text-gray-900 m-0">
+            {formatPercent(percentCobrosCumplidas)}
+          </p>
+        </div>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
