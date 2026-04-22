@@ -6,6 +6,7 @@ import { useReportContext } from "../context/report-context";
 import {
   buildExcelBuffer,
   buildPdfBlob,
+  buildVendorPdfBlob,
   triggerDownload,
   slugify,
   ReportRowRaw,
@@ -37,10 +38,18 @@ export default function BatchExport() {
         if (format === "xlsx") {
           zip.file(`${safeName}.xlsx`, buildExcelBuffer(groupRows));
         } else {
-          const pdfBlob = buildPdfBlob(
-            groupRows,
-            `Reporte por ${groupBy}: ${groupValue}`,
-          );
+          let pdfBlob: Blob;
+          if (groupBy === "VENDEDOR") {
+            pdfBlob = buildVendorPdfBlob({
+              rows: groupRows,
+              vendorName: groupValue,
+            });
+          } else {
+            pdfBlob = buildPdfBlob(
+              groupRows,
+              `Reporte por ${groupBy}: ${groupValue}`,
+            );
+          }
           zip.file(`${safeName}.pdf`, pdfBlob);
         }
       }

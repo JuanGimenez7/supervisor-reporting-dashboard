@@ -11,6 +11,7 @@ import {
   calculateCompliance,
   buildExcelBuffer,
   buildPdfBlob,
+  buildVendorPdfBlob,
   triggerDownload,
   LEAF_COLUMN_COUNT,
   ALL_OPTION,
@@ -130,8 +131,18 @@ export default function FiltersAndTable() {
     triggerDownload(buffer, `vendedor-${safeName}.xlsx`);
   }
 
-  function exportVendorPdf(vendorRows: ReportRowRaw[], vendorName: string) {
-    const blob = buildPdfBlob(vendorRows, `Boleta - ${vendorName}`);
+  function exportVendorPdf(
+    vendorRows: ReportRowRaw[],
+    vendorName: string,
+    supervisor?: string,
+    region?: string,
+  ) {
+    const blob = buildVendorPdfBlob({
+      rows: vendorRows,
+      vendorName,
+      supervisor,
+      region,
+    });
     const safeName = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     triggerDownload(blob, `vendedor-${safeName}.pdf`);
   }
@@ -575,118 +586,150 @@ export default function FiltersAndTable() {
               </h3>
             </div>
 
-            <div className="mt-4 flex justify-center">
-              <div className="text-sm w-full max-w-[480px]">
-                <div className="space-y-2">
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Supervisor:</span>
-                    <span className="font-medium text-gray-900">
-                      {selectedVendor.supervisor}
-                    </span>
+            <div className="mt-4">
+              <div className="space-y-4">
+                {/* Ventas */}
+                <div>
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                    Ventas
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Presupuesto
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(selectedVendor.totals.PRESUPUESTO_VENTAS)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">Vendido</div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(selectedVendor.totals.VENDIDO)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Cumplimiento
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatPercent(
+                          calculateCompliance(
+                            selectedVendor.totals.VENDIDO,
+                            selectedVendor.totals.PRESUPUESTO_VENTAS,
+                          ),
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Región:</span>
-                    <span className="font-medium text-gray-900">
-                      {selectedVendor.region}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">
-                      Presupuesto de ventas:
-                    </span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.PRESUPUESTO_VENTAS)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Vendido:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.VENDIDO)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">
-                      Cumplimiento de Ventas:
-                    </span>
-                    <span className="font-medium text-gray-900">
-                      {formatPercent(
-                        calculateCompliance(
-                          selectedVendor.totals.VENDIDO,
-                          selectedVendor.totals.PRESUPUESTO_VENTAS,
-                        ),
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Cartera de Clientes:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.CARTERA_CLIENTES)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Clientes Activados:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.CLIENTES_ACTIVADOS)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">
-                      Cumplimiento de Clientes:
-                    </span>
-                    <span className="font-medium text-gray-900">
-                      {formatPercent(
-                        calculateCompliance(
-                          selectedVendor.totals.CLIENTES_ACTIVADOS,
-                          selectedVendor.totals.CARTERA_CLIENTES,
-                        ),
-                      )}
-                    </span>
-                  </div>
+                </div>
 
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">
-                      Presupuesto de Cobros:
-                    </span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.PRESUPUESTO_COBROS)}
-                    </span>
+                {/* Clientes */}
+                <div>
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                    Clientes
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Cartera
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(selectedVendor.totals.CARTERA_CLIENTES)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">Activados</div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(selectedVendor.totals.CLIENTES_ACTIVADOS)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Cumplimiento
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatPercent(
+                          calculateCompliance(
+                            selectedVendor.totals.CLIENTES_ACTIVADOS,
+                            selectedVendor.totals.CARTERA_CLIENTES,
+                          ),
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Cobrado:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.COBRADO)}
-                    </span>
+                </div>
+
+                {/* Cobros */}
+                <div>
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                    Cobros
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Presupuesto
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(selectedVendor.totals.PRESUPUESTO_COBROS)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">Cobrado</div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(selectedVendor.totals.COBRADO)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Cumplimiento
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatPercent(
+                          calculateCompliance(
+                            selectedVendor.totals.COBRADO,
+                            selectedVendor.totals.PRESUPUESTO_COBROS,
+                          ),
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">
-                      Cumplimiento de Cobros:
-                    </span>
-                    <span className="font-medium text-gray-900">
-                      {formatPercent(
-                        calculateCompliance(
-                          selectedVendor.totals.COBRADO,
-                          selectedVendor.totals.PRESUPUESTO_COBROS,
-                        ),
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Marcas Activadas:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatInteger(selectedVendor.promedioMarcasActivadas)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Renglones Importados:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.RENGLONES_IMPORTADOS)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">Renglones Nacionales:</span>
-                    <span className="font-medium text-gray-900">
-                      {formatNumber(selectedVendor.totals.RENGLONES_NACIONALES)}
-                    </span>
+                </div>
+
+                {/* Marcas / Renglones */}
+                <div>
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                    Marcas / Renglones
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Marcas Activadas
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatInteger(selectedVendor.promedioMarcasActivadas)}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Renglones Importados
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(
+                          selectedVendor.totals.RENGLONES_IMPORTADOS,
+                        )}
+                      </div>
+                    </div>
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-xs text-gray-500">
+                        Renglones Nacionales
+                      </div>
+                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                        {formatNumber(
+                          selectedVendor.totals.RENGLONES_NACIONALES,
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -697,7 +740,12 @@ export default function FiltersAndTable() {
                 type="button"
                 className="rounded bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
                 onClick={() =>
-                  exportVendorPdf(selectedVendor.rows, selectedVendor.vendor)
+                  exportVendorPdf(
+                    selectedVendor.rows,
+                    selectedVendor.vendor,
+                    selectedVendor.supervisor,
+                    selectedVendor.region,
+                  )
                 }
               >
                 Descargar PDF
