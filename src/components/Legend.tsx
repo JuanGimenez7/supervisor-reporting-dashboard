@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { computeMustInfo } from "../lib/semaforo";
 
-export default function Header() {
+export default function Legend() {
   const [info, setInfo] = useState<{
     must: number;
     elapsedWorking: number;
@@ -40,7 +40,10 @@ export default function Header() {
   const refDateStr = formatDateDMY(refDate);
 
   return (
-    <header className="w-full rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+    <section
+      className="w-full rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm"
+      aria-label="Leyenda del semáforo"
+    >
       <h1 className="text-lg font-bold text-gray-900 lg:text-2xl">
         Seguimiento de Gestión de Supervisores ∞
       </h1>
@@ -77,6 +80,6 @@ export default function Header() {
           </div>
         </div>
       </div>
-    </header>
+    </section>
   );
 }
