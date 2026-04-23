@@ -41,3 +41,32 @@ picture {
 svg {
   color: inherit;
 }
+
+/*
+ Lock background scroll when a modal is open and enable internal modal scrolling.
+ - `.modal-open` is a fallback and used by JS to indicate locked state.
+ - `.modal-content` enables internal scrolling with proper touch behavior and prevents scroll chaining.
+*/
+.modal-open {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.modal-overlay {
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.modal-content {
+  /* leave a vertical margin on mobile so modal doesn't occupy the full height */
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  /* allow vertical pan on touch devices for the inner scroll area */
+  touch-action: pan-y;
+  margin: 2rem 1rem;
+  z-index: 50;
+}

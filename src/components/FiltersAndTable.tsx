@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useReportContext } from "../context/report-context";
 import {
   aggregateTotals,
@@ -124,6 +124,63 @@ export default function FiltersAndTable() {
   function closeVendorModal() {
     setSelectedVendor(null);
   }
+
+  const scrollYRef = useRef<number | null>(null);
+  const prevBodyStyleRef = useRef<Record<string, string>>({});
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (selectedVendor) {
+      prevBodyStyleRef.current = {
+        position: document.body.style.position || "",
+        top: document.body.style.top || "",
+        left: document.body.style.left || "",
+        right: document.body.style.right || "",
+        overflow: document.body.style.overflow || "",
+        width: document.body.style.width || "",
+      };
+
+      scrollYRef.current = window.scrollY || window.pageYOffset || 0;
+
+      // Lock scroll on background
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.classList.add("modal-open");
+    } else {
+      const prev = prevBodyStyleRef.current;
+      document.body.style.position = prev.position;
+      document.body.style.top = prev.top;
+      document.body.style.left = prev.left;
+      document.body.style.right = prev.right;
+      document.body.style.width = prev.width;
+      document.body.style.overflow = prev.overflow;
+      document.body.classList.remove("modal-open");
+      if (scrollYRef.current !== null) {
+        window.scrollTo(0, scrollYRef.current);
+        scrollYRef.current = null;
+      }
+    }
+
+    return () => {
+      const prev = prevBodyStyleRef.current;
+      document.body.style.position = prev.position;
+      document.body.style.top = prev.top;
+      document.body.style.left = prev.left;
+      document.body.style.right = prev.right;
+      document.body.style.width = prev.width;
+      document.body.style.overflow = prev.overflow;
+      document.body.classList.remove("modal-open");
+      if (scrollYRef.current !== null) {
+        window.scrollTo(0, scrollYRef.current);
+        scrollYRef.current = null;
+      }
+    };
+  }, [selectedVendor]);
 
   function exportVendorExcel(vendorRows: ReportRowRaw[], vendorName: string) {
     const buffer = buildExcelBuffer(vendorRows);
@@ -568,10 +625,10 @@ export default function FiltersAndTable() {
       {selectedVendor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/40 modal-overlay"
             onClick={closeVendorModal}
           />
-          <div className="relative w-auto max-w-[540px] rounded border border-gray-300 bg-white p-12 shadow-lg">
+          <div className="relative w-auto max-w-[540px] rounded border border-gray-300 bg-white p-6 shadow-lg modal-content">
             <button
               className="absolute top-4 right-4 rounded bg-gray-700 px-2 py-1 text-sm font-medium text-white hover:bg-gray-800"
               onClick={closeVendorModal}
@@ -595,9 +652,7 @@ export default function FiltersAndTable() {
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
-                        Presupuesto
-                      </div>
+                      <div className="text-xs text-gray-500">Presupuesto</div>
                       <div className="mt-2 text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.PRESUPUESTO_VENTAS)}
                       </div>
@@ -609,9 +664,7 @@ export default function FiltersAndTable() {
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
-                        Cumplimiento
-                      </div>
+                      <div className="text-xs text-gray-500">Cumplimiento</div>
                       <div className="mt-2 text-2xl font-semibold text-slate-700">
                         {formatPercent(
                           calculateCompliance(
@@ -631,9 +684,7 @@ export default function FiltersAndTable() {
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
-                        Cartera
-                      </div>
+                      <div className="text-xs text-gray-500">Cartera</div>
                       <div className="mt-2 text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.CARTERA_CLIENTES)}
                       </div>
@@ -645,9 +696,7 @@ export default function FiltersAndTable() {
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
-                        Cumplimiento
-                      </div>
+                      <div className="text-xs text-gray-500">Cumplimiento</div>
                       <div className="mt-2 text-2xl font-semibold text-slate-700">
                         {formatPercent(
                           calculateCompliance(
@@ -667,9 +716,7 @@ export default function FiltersAndTable() {
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
-                        Presupuesto
-                      </div>
+                      <div className="text-xs text-gray-500">Presupuesto</div>
                       <div className="mt-2 text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.PRESUPUESTO_COBROS)}
                       </div>
@@ -681,9 +728,7 @@ export default function FiltersAndTable() {
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
-                        Cumplimiento
-                      </div>
+                      <div className="text-xs text-gray-500">Cumplimiento</div>
                       <div className="mt-2 text-2xl font-semibold text-slate-700">
                         {formatPercent(
                           calculateCompliance(

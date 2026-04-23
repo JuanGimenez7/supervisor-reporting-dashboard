@@ -153,7 +153,7 @@ export default function ConsolidatedSummary() {
 
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Presupuesto de Ventas</p>
+            <p className="text-sm text-gray-500">Presupuesto</p>
             <p className="text-2xl font-semibold text-gray-900">
               {formatNumber(totalPresupuestoVentas)}
             </p>
@@ -167,7 +167,7 @@ export default function ConsolidatedSummary() {
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-sm text-gray-500">% Cumplimiento</p>
+            <p className="text-sm text-gray-500">Cumplimiento</p>
             <div
               className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
                 "ventas",
@@ -191,7 +191,7 @@ export default function ConsolidatedSummary() {
 
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Cartera de Clientes</p>
+            <p className="text-sm text-gray-500">Cartera</p>
             <p className="text-2xl font-semibold text-gray-900">
               {formatInteger(totalClientes)}
             </p>
@@ -205,7 +205,7 @@ export default function ConsolidatedSummary() {
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-sm text-gray-500">% Cumplimiento</p>
+            <p className="text-sm text-gray-500">Cumplimiento</p>
             <div
               className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
                 "clientes",
@@ -229,7 +229,7 @@ export default function ConsolidatedSummary() {
 
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Presupuesto de Cobros</p>
+            <p className="text-sm text-gray-500">Presupuesto</p>
             <p className="text-2xl font-semibold text-gray-900">
               {formatNumber(totalPresupuestoCobros)}
             </p>
@@ -243,7 +243,7 @@ export default function ConsolidatedSummary() {
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-sm text-gray-500">% Cumplimiento</p>
+            <p className="text-sm text-gray-500">Cumplimiento</p>
             <div
               className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
                 "cobros",
