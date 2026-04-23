@@ -67,12 +67,12 @@ export default function BatchExport() {
   return (
     <section className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm w-full">
       <div className="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center lg:gap-2">
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-xs lg:text-sm font-medium text-gray-700">
           Exportación por lote:
         </label>
         <select
           id="group-by"
-          className="w-full lg:w-auto rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-800"
+          className="w-full lg:w-auto rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-xs lg:text-sm text-gray-800"
           value={groupBy}
           onChange={(event) => setGroupBy(event.target.value as GroupByKey)}
         >
@@ -83,7 +83,7 @@ export default function BatchExport() {
         <div className="flex w-full flex-col gap-2 lg:flex-row lg:w-auto lg:gap-2">
           <button
             type="button"
-            className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="w-full rounded-md bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
             onClick={() => exportBatch("xlsx")}
             disabled={isExportingBatch || rows.length === 0}
           >
@@ -91,7 +91,7 @@ export default function BatchExport() {
           </button>
           <button
             type="button"
-            className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="w-full rounded-md bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-gray-50 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
             onClick={() => exportBatch("pdf")}
             disabled={isExportingBatch || rows.length === 0}
           >
@@ -100,7 +100,9 @@ export default function BatchExport() {
         </div>
 
         {isExportingBatch && (
-          <span className="text-sm text-gray-600">Generando ZIP...</span>
+          <span className="text-xs lg:text-sm text-gray-600">
+            Generando ZIP...
+          </span>
         )}
       </div>
     </section>

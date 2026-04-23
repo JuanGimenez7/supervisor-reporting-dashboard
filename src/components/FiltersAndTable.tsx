@@ -245,14 +245,14 @@ export default function FiltersAndTable() {
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
             <button
               type="button"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
               onClick={toggleAllSupervisors}
               disabled={pivotRows.length === 0}
             >
               {areAllExpanded ? "Colapsar todo" : "Expandir todo"}
             </button>
 
-            <label className="flex w-full items-center gap-2 text-sm lg:w-auto">
+            <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
               <span className="font-medium text-gray-700">Supervisor</span>
               <select
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
@@ -268,7 +268,7 @@ export default function FiltersAndTable() {
               </select>
             </label>
 
-            <label className="flex w-full items-center gap-2 text-sm lg:w-auto">
+            <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
               <span className="font-medium text-gray-700">Vendedor</span>
               <select
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
@@ -286,7 +286,7 @@ export default function FiltersAndTable() {
 
             <button
               type="button"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
               onClick={() => {
                 setSupervisorFilter(ALL_OPTION);
                 setVendedorFilter(ALL_OPTION);
@@ -301,7 +301,7 @@ export default function FiltersAndTable() {
           <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:w-auto">
             <button
               type="button"
-              className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
+              className="w-full rounded-md bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
               onClick={exportCurrentExcel}
               disabled={filteredRows.length === 0}
             >
@@ -309,7 +309,7 @@ export default function FiltersAndTable() {
             </button>
             <button
               type="button"
-              className="w-full rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
+              className="w-full rounded-md bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
               onClick={exportCurrentPdf}
               disabled={filteredRows.length === 0}
             >
@@ -319,7 +319,7 @@ export default function FiltersAndTable() {
         </div>
       </div>
       <div className="w-full overflow-x-auto">
-        <table className="min-w-full border-collapse text-xs">
+        <table className="min-w-full border-collapse text-[0.68rem] lg:text-xs">
           <thead className="sticky top-0 z-20 bg-gray-500 text-gray-50">
             <tr>
               <th
@@ -630,7 +630,7 @@ export default function FiltersAndTable() {
           />
           <div className="relative w-auto max-w-[540px] rounded border border-gray-300 bg-white p-6 shadow-lg modal-content">
             <button
-              className="absolute top-4 right-4 rounded bg-gray-700 px-2 py-1 text-sm font-medium text-white hover:bg-gray-800"
+              className="absolute top-4 right-4 rounded bg-gray-700 px-2 py-1 text-xs lg:text-sm font-medium text-white hover:bg-gray-800"
               onClick={closeVendorModal}
               aria-label="Cerrar"
             >
@@ -638,7 +638,7 @@ export default function FiltersAndTable() {
             </button>
 
             <div>
-              <h3 className="text-lg font-semibold text-slate-700">
+              <h3 className="text-base lg:text-lg font-semibold text-slate-700">
                 {selectedVendor.vendor}
               </h3>
             </div>
@@ -647,25 +647,31 @@ export default function FiltersAndTable() {
               <div className="space-y-4">
                 {/* Ventas */}
                 <div>
-                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                  <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2">
                     Ventas
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Presupuesto</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Presupuesto
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.PRESUPUESTO_VENTAS)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Vendido</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Vendido
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.VENDIDO)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Cumplimiento</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Cumplimiento
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatPercent(
                           calculateCompliance(
                             selectedVendor.totals.VENDIDO,
@@ -679,25 +685,31 @@ export default function FiltersAndTable() {
 
                 {/* Clientes */}
                 <div>
-                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                  <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2">
                     Clientes
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Cartera</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Cartera
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.CARTERA_CLIENTES)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Activados</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Activados
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.CLIENTES_ACTIVADOS)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Cumplimiento</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Cumplimiento
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatPercent(
                           calculateCompliance(
                             selectedVendor.totals.CLIENTES_ACTIVADOS,
@@ -711,25 +723,31 @@ export default function FiltersAndTable() {
 
                 {/* Cobros */}
                 <div>
-                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                  <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2">
                     Cobros
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Presupuesto</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Presupuesto
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.PRESUPUESTO_COBROS)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Cobrado</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Cobrado
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(selectedVendor.totals.COBRADO)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">Cumplimiento</div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Cumplimiento
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatPercent(
                           calculateCompliance(
                             selectedVendor.totals.COBRADO,
@@ -743,33 +761,33 @@ export default function FiltersAndTable() {
 
                 {/* Marcas / Renglones */}
                 <div>
-                  <h4 className="text-sm font-medium text-slate-700 mb-2">
+                  <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2">
                     Marcas / Renglones
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
                         Marcas Activadas
                       </div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatInteger(selectedVendor.promedioMarcasActivadas)}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
                         Renglones Importados
                       </div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(
                           selectedVendor.totals.RENGLONES_IMPORTADOS,
                         )}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
-                      <div className="text-xs text-gray-500">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
                         Renglones Nacionales
                       </div>
-                      <div className="mt-2 text-2xl font-semibold text-slate-700">
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(
                           selectedVendor.totals.RENGLONES_NACIONALES,
                         )}
@@ -779,11 +797,10 @@ export default function FiltersAndTable() {
                 </div>
               </div>
             </div>
-
             <div className="mt-6 flex gap-3 justify-center">
               <button
                 type="button"
-                className="rounded bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                className="rounded bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-white hover:bg-gray-800"
                 onClick={() =>
                   exportVendorPdf(
                     selectedVendor.rows,
@@ -797,7 +814,7 @@ export default function FiltersAndTable() {
               </button>
               <button
                 type="button"
-                className="rounded bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                className="rounded bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-white hover:bg-gray-800"
                 onClick={() =>
                   exportVendorExcel(selectedVendor.rows, selectedVendor.vendor)
                 }
