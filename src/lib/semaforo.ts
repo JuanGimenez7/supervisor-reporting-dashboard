@@ -1,16 +1,68 @@
 export type SemaforoKind = "ventas" | "clientes" | "cobros";
 
-// Devuelve una clase de Tailwind ligera según el valor de cumplimiento (porcentaje)
-export function getSemaforoClass(kind: SemaforoKind, value: number): string {
-  // `value` está en porcentaje (0-100)
+// Devuelve información del "must" calculado para el día anterior al indicado
+// (por defecto: día anterior a hoy). Considera hábiles de lunes a viernes.
+export function computeMustInfo(date?: Date) {
+  const now = date ? new Date(date) : new Date();
+  // referencia: día anterior
+  const ref = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  ref.setDate(ref.getDate() - 1);
+
+  const year = ref.getFullYear();
+  const month = ref.getMonth();
+  const day = ref.getDate();
+
+  const daysInMonth = (y: number, m: number) => new Date(y, m + 1, 0).getDate();
+  const isWorkingDay = (y: number, m: number, dd: number) => {
+    const dow = new Date(y, m, dd).getDay();
+    return dow !== 0 && dow !== 6;
+  };
+
+  const dim = daysInMonth(year, month);
+  let totalWorking = 0;
+  let elapsedWorking = 0;
+  for (let i = 1; i <= dim; i++) {
+    if (isWorkingDay(year, month, i)) {
+      totalWorking++;
+      if (i <= day) elapsedWorking++;
+    }
+  }
+  const must = totalWorking === 0 ? 0 : elapsedWorking / totalWorking;
+  return { must, elapsedWorking, totalWorking, ref };
+}
+
+// Compatibilidad: computeMust sigue existiendo y devuelve solo la fracción.
+export function computeMust(date?: Date): number {
+  return computeMustInfo(date).must;
+}
+
+// Devuelve una clase de Tailwind según el valor de cumplimiento (porcentaje).
+// Acepta un `mustOverride` opcional (0..1) para forzar el porcentaje del mes.
+export function getSemaforoClass(
+  kind: SemaforoKind,
+  value: number,
+  mustOverride?: number,
+): string {
+  const must = typeof mustOverride === "number" ? mustOverride : computeMust();
+
+  // Umbrales base al final de mes
+  const VENTAS_Y_COBROS_YELLOW = 60;
+  const VENTAS_Y_COBROS_GREEN = 90;
+  const CLIENTES_YELLOW = 40;
+  const CLIENTES_GREEN = 60;
+
+  const ventasYellowThreshold = VENTAS_Y_COBROS_YELLOW * must;
+  const ventasGreenThreshold = VENTAS_Y_COBROS_GREEN * must;
+  const clientesYellowThreshold = CLIENTES_YELLOW * must;
+  const clientesGreenThreshold = CLIENTES_GREEN * must;
+
   if (kind === "clientes") {
-    if (value >= 59.5) return "bg-green-200";
-    if (value >= 39.5) return "bg-yellow-200";
+    if (value >= clientesGreenThreshold) return "bg-green-200";
+    if (value >= clientesYellowThreshold) return "bg-yellow-200";
     return "bg-red-200";
   }
 
-  // ventas y cobros usan los mismos umbrales
-  if (value >= 89.5) return "bg-green-200";
-  if (value >= 59.5) return "bg-yellow-200";
+  if (value >= ventasGreenThreshold) return "bg-green-200";
+  if (value >= ventasYellowThreshold) return "bg-yellow-200";
   return "bg-red-200";
 }
