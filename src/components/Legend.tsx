@@ -45,13 +45,11 @@ export default function Legend() {
       aria-label="Leyenda del semáforo"
     >
       <h1 className="text-lg font-bold text-gray-900 lg:text-2xl">
-        Seguimiento de Gestión de Supervisores ∞
+        Seguimiento de Gestión de Supervisores
       </h1>
       <div className="mt-3 text-xs lg:text-sm text-gray-700">
-        <div className="font-medium">% Cumplimiento al día</div>
-        <div className="mt-2 text-xs text-gray-600">
-          Datos hasta el {refDateStr}. Día hábil {elapsedWorking} de{" "}
-          {totalWorking}: {mustPct}% del mes
+        <div className="mt-2 text-sm text-gray-600">
+          Datos hasta el {refDateStr} / {mustPct}% del mes.
         </div>
         <div className="mt-2 flex flex-col gap-2 lg:flex-row lg:gap-6">
           <div className="flex w-full items-center gap-2 lg:w-auto">

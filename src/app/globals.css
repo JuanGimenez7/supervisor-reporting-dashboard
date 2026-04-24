@@ -31,11 +31,7 @@ body {
 }
 
 /* Forzar imágenes y SVGs a escala de grises visualmente */
-img,
-svg,
-picture {
-  filter: grayscale(1) contrast(0.95) brightness(0.98);
-}
+/* Regla eliminada para permitir imágenes a color */
 
 /* Asegurar que iconos inline usen currentColor cuando sea posible */
 svg {
