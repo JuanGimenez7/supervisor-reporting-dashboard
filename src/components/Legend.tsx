@@ -47,7 +47,7 @@ export default function Legend() {
       </h1>
       <div className="mt-3 text-xs lg:text-sm text-gray-700">
         <div className="mt-2 text-sm text-gray-600">
-          Datos hasta el {refDateStr} / {mustPct}% del mes.
+          Datos hasta el {refDateStr} / Alcance actual: {mustPct}% del mes.
         </div>
         <div className="mt-2 flex flex-col gap-2 lg:flex-row lg:gap-6">
           <div className="flex w-full items-center gap-2 lg:w-auto">
