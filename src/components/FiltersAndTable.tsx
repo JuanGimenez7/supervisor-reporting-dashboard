@@ -759,23 +759,26 @@ export default function FiltersAndTable() {
                   </div>
                 </div>
 
-                {/* Marcas / Renglones */}
+                {/* Renglones */}
                 <div>
                   <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2">
-                    Marcas / Renglones
+                    Renglones
                   </h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded border border-gray-200 bg-white p-4">
                       <div className="text-[0.68rem] lg:text-xs text-gray-500">
-                        Marcas Activadas
+                        Total
                       </div>
                       <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
-                        {formatInteger(selectedVendor.promedioMarcasActivadas)}
+                        {formatNumber(
+                          selectedVendor.totals.RENGLONES_IMPORTADOS +
+                            selectedVendor.totals.RENGLONES_NACIONALES,
+                        )}
                       </div>
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
                       <div className="text-[0.68rem] lg:text-xs text-gray-500">
-                        Renglones Importados
+                        Importados
                       </div>
                       <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(
@@ -785,12 +788,29 @@ export default function FiltersAndTable() {
                     </div>
                     <div className="rounded border border-gray-200 bg-white p-4">
                       <div className="text-[0.68rem] lg:text-xs text-gray-500">
-                        Renglones Nacionales
+                        Nacionales
                       </div>
                       <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
                         {formatNumber(
                           selectedVendor.totals.RENGLONES_NACIONALES,
                         )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Marcas */}
+                <div>
+                  <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2">
+                    Marcas
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="rounded border border-gray-200 bg-white p-4">
+                      <div className="text-[0.68rem] lg:text-xs text-gray-500">
+                        Total
+                      </div>
+                      <div className="mt-2 text-xl lg:text-2xl font-semibold text-slate-700">
+                        {formatInteger(selectedVendor.promedioMarcasActivadas)}
                       </div>
                     </div>
                   </div>

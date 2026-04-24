@@ -142,6 +142,11 @@ export default function ConsolidatedSummary() {
     [filteredRows],
   );
 
+  const totalRenglones = useMemo(
+    () => totalRenglonesImportados + totalRenglonesNacionales,
+    [totalRenglonesImportados, totalRenglonesNacionales],
+  );
+
   return (
     <section className="space-y-3">
       {/* Group 1: Ventas */}
@@ -258,32 +263,49 @@ export default function ConsolidatedSummary() {
         </div>
       </div>
 
-      {/* Group 4: Marcas y Renglones */}
+      {/* Group 4: Renglones */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
           <span className="text-base lg:text-lg">📦</span>
-          <span>Marcas / Renglones</span>
+          <span>Renglones</span>
         </div>
 
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Promedio de Marcas</p>
+            <p className="text-xs lg:text-sm text-gray-500">Total</p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
-              {formatInteger(avgMarcasActivadas)}
+              {formatInteger(totalRenglones)}
             </p>
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Renglones Importados</p>
+            <p className="text-xs lg:text-sm text-gray-500">Importados</p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalRenglonesImportados)}
             </p>
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Renglones Nacionales</p>
+            <p className="text-xs lg:text-sm text-gray-500">Nacionales</p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalRenglonesNacionales)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Group 5: Marcas */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
+          <span className="text-base lg:text-lg">🏷️</span>
+          <span>Marcas</span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">Promedio</p>
+            <p className="text-base lg:text-2xl font-semibold text-gray-900">
+              {formatInteger(avgMarcasActivadas)}
             </p>
           </div>
         </div>
