@@ -8,7 +8,7 @@ export default function Header() {
 
   return (
     <header className="w-full border-b border-gray-200 bg-white">
-      <div className="mx-auto flex w-full items-center p-4 lg:max-w-9xl lg:p-6">
+      <div className="mx-auto flex w-full items-center p-4 lg:max-w-9xl lg:py-4 lg:px-8">
         <img
           src="/logo_solo.jpg"
           alt="Logo"
@@ -17,7 +17,7 @@ export default function Header() {
         <img
           src="/Logo_complete_and_phrase.webp"
           alt="Logo"
-          className="hidden h-20 w-auto lg:block"
+          className="hidden h-15 w-auto lg:block"
         />
         <nav className="flex items-center gap-3 lg:gap-6">
           <Link

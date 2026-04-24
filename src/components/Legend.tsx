@@ -47,33 +47,8 @@ export default function Legend() {
       </h1>
       <div className="mt-3 text-xs lg:text-sm text-gray-700">
         <div className="mt-2 text-sm text-gray-600">
-          Datos hasta el {refDateStr} / Alcance actual: {mustPct}% del mes.
-        </div>
-        <div className="mt-2 flex flex-col gap-2 lg:flex-row lg:gap-6">
-          <div className="flex w-full items-center gap-2 lg:w-auto">
-            <span>
-              Ventas / Cobros:
-              <br />
-              <span className="inline-block h-4 w-6 rounded-sm bg-red-200 border border-red-200" />{" "}
-              &lt; {fmt(ventasYellow)},{" "}
-              <span className="inline-block h-4 w-6 rounded-sm bg-yellow-200 border border-yellow-200" />{" "}
-              {fmt(ventasYellow)} - {fmt(ventasGreen)},{" "}
-              <span className="inline-block h-4 w-6 rounded-sm bg-green-200 border border-green-200" />{" "}
-              ≥ {fmt(ventasGreen)}
-            </span>
-          </div>
-          <div className="flex w-full items-center gap-2 lg:w-auto">
-            <span>
-              Clientes:
-              <br />
-              <span className="inline-block h-4 w-6 rounded-sm bg-red-200 border border-red-200" />{" "}
-              &lt; {fmt(clientesYellow)},{" "}
-              <span className="inline-block h-4 w-6 rounded-sm bg-yellow-200 border border-yellow-200" />{" "}
-              {fmt(clientesYellow)} - {fmt(clientesGreen)},{" "}
-              <span className="inline-block h-4 w-6 rounded-sm bg-green-200 border border-green-200" />{" "}
-              ≥ {fmt(clientesGreen)}
-            </span>
-          </div>
+          Datos hasta el {refDateStr}. <br className="lg:hidden" />
+          Alcance actual: {mustPct}% del mes.
         </div>
       </div>
     </section>
