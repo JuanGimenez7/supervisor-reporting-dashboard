@@ -187,7 +187,7 @@ export function buildVendorPdfBlob(params: {
   const availableHeight = pageHeight - marginY - titleAreaHeight - marginY;
   const perGroupBlock = Math.floor((availableHeight - sectionGap * (groupsCount - 1)) / groupsCount);
   const titleHeight = 10;
-  const cardHeight = perGroupBlock - titleHeight - 30;
+  const cardHeight = perGroupBlock - titleHeight - 20;
   let currentY = marginY + titleAreaHeight;
 
   const totalRenglones = totals.RENGLONES_IMPORTADOS + totals.RENGLONES_NACIONALES;
@@ -233,6 +233,9 @@ export function buildVendorPdfBlob(params: {
     },
   ];
 
+  const cellGap = 0;
+  const rowHeight = (cardHeight - cellGap) / 2.5;
+
   for (const group of groups) {
     // section title
     doc.setFontSize(10);
@@ -250,17 +253,18 @@ export function buildVendorPdfBlob(params: {
       doc.setLineWidth(0.35);
       doc.rect(marginX, cardY, baseColWidth, cardHeight);
 
+      const labelY = cardY + rowHeight / 2 + 4;
+      const valueY = cardY + rowHeight + cellGap + rowHeight / 2 + 3;
+      const centerX = marginX + baseColWidth / 2;
+
       doc.setFontSize(10);
       doc.setTextColor(100);
-      const labelX = marginX + baseColWidth / 2;
-      const labelY = cardY + 4;
-      doc.text(group.metrics[0].label, labelX, labelY, { align: "center" });
+      doc.text(group.metrics[0].label, centerX, labelY, { align: "center" });
 
-      const valueY = labelY + 8;
       doc.setFontSize(12);
       doc.setTextColor(33);
       doc.setFont("helvetica", "bold");
-      doc.text(String(group.metrics[0].value), labelX, valueY, { align: "center" });
+      doc.text(String(group.metrics[0].value), centerX, valueY, { align: "center" });
       doc.setFont("helvetica", "normal");
     } else {
       // three cards for other groups
@@ -270,17 +274,18 @@ export function buildVendorPdfBlob(params: {
         doc.setLineWidth(0.35);
         doc.rect(x, cardY, baseColWidth, cardHeight);
 
+        const labelY = cardY + rowHeight / 2 + 4;
+        const valueY = cardY + rowHeight + cellGap + rowHeight / 2 + 3;
+        const centerX = x + baseColWidth / 2;
+
         doc.setFontSize(10);
         doc.setTextColor(100);
-        const labelX = x + baseColWidth / 2;
-        const labelY = cardY + 4;
-        doc.text(group.metrics[i].label, labelX, labelY, { align: "center" });
+        doc.text(group.metrics[i].label, centerX, labelY, { align: "center" });
 
-        const valueY = labelY + 8;
         doc.setFontSize(12);
         doc.setTextColor(33);
         doc.setFont("helvetica", "bold");
-        doc.text(String(group.metrics[i].value), labelX, valueY, { align: "center" });
+        doc.text(String(group.metrics[i].value), centerX, valueY, { align: "center" });
         doc.setFont("helvetica", "normal");
       }
     }
