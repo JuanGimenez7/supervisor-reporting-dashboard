@@ -18,7 +18,7 @@ import {
   ReportRowRaw,
   NumericTotals,
 } from "../lib/report-utils";
-import { getSemaforoClass } from "../lib/semaforo";
+import { getSemaforoEmoji } from "../lib/semaforo";
 
 export default function FiltersAndTable() {
   const {
@@ -454,13 +454,11 @@ export default function FiltersAndTable() {
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.VENDIDO)}
                     </td>
-                    <td
-                      className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900 ${getSemaforoClass(
-                        "ventas",
-                        ventasCumplidoSuper,
-                      )}`}
-                    >
-                      {formatPercent(ventasCumplidoSuper)}
+                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-end gap-1">
+                        <span>{getSemaforoEmoji("ventas", ventasCumplidoSuper)}</span>
+                        <span>{formatPercent(ventasCumplidoSuper)}</span>
+                      </span>
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.CARTERA_CLIENTES)}
@@ -468,13 +466,11 @@ export default function FiltersAndTable() {
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.CLIENTES_ACTIVADOS)}
                     </td>
-                    <td
-                      className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900 ${getSemaforoClass(
-                        "clientes",
-                        clientesCumplidoSuper,
-                      )}`}
-                    >
-                      {formatPercent(clientesCumplidoSuper)}
+                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-end gap-1">
+                        <span>{getSemaforoEmoji("clientes", clientesCumplidoSuper)}</span>
+                        <span>{formatPercent(clientesCumplidoSuper)}</span>
+                      </span>
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.PRESUPUESTO_COBROS)}
@@ -482,13 +478,11 @@ export default function FiltersAndTable() {
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.COBRADO)}
                     </td>
-                    <td
-                      className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900 ${getSemaforoClass(
-                        "cobros",
-                        cobrosCumplidoSuper,
-                      )}`}
-                    >
-                      {formatPercent(cobrosCumplidoSuper)}
+                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-end gap-1">
+                        <span>{getSemaforoEmoji("cobros", cobrosCumplidoSuper)}</span>
+                        <span>{formatPercent(cobrosCumplidoSuper)}</span>
+                      </span>
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatInteger(group.promedioMarcasActivadas)}
@@ -571,13 +565,11 @@ export default function FiltersAndTable() {
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.VENDIDO)}
                         </td>
-                        <td
-                          className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800 ${getSemaforoClass(
-                            "ventas",
-                            ventasCumplidoVendor,
-                          )}`}
-                        >
-                          {formatPercent(ventasCumplidoVendor)}
+                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-end gap-1">
+                            <span>{getSemaforoEmoji("ventas", ventasCumplidoVendor)}</span>
+                            <span>{formatPercent(ventasCumplidoVendor)}</span>
+                          </span>
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.CARTERA_CLIENTES)}
@@ -585,13 +577,11 @@ export default function FiltersAndTable() {
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.CLIENTES_ACTIVADOS)}
                         </td>
-                        <td
-                          className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800 ${getSemaforoClass(
-                            "clientes",
-                            clientesCumplidoVendor,
-                          )}`}
-                        >
-                          {formatPercent(clientesCumplidoVendor)}
+                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-end gap-1">
+                            <span>{getSemaforoEmoji("clientes", clientesCumplidoVendor)}</span>
+                            <span>{formatPercent(clientesCumplidoVendor)}</span>
+                          </span>
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.PRESUPUESTO_COBROS)}
@@ -599,13 +589,11 @@ export default function FiltersAndTable() {
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.COBRADO)}
                         </td>
-                        <td
-                          className={`whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800 ${getSemaforoClass(
-                            "cobros",
-                            cobrosCumplidoVendor,
-                          )}`}
-                        >
-                          {formatPercent(cobrosCumplidoVendor)}
+                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-end gap-1">
+                            <span>{getSemaforoEmoji("cobros", cobrosCumplidoVendor)}</span>
+                            <span>{formatPercent(cobrosCumplidoVendor)}</span>
+                          </span>
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatInteger(vendorGroup.promedioMarcasActivadas)}

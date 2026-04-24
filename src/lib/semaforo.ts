@@ -36,9 +36,9 @@ export function computeMust(date?: Date): number {
   return computeMustInfo(date).must;
 }
 
-// Devuelve una clase de Tailwind según el valor de cumplimiento (porcentaje).
+// Devuelve el emoji del semáforo según el valor de cumplimiento (porcentaje).
 // Acepta un `mustOverride` opcional (0..1) para forzar el porcentaje del mes.
-export function getSemaforoClass(
+export function getSemaforoEmoji(
   kind: SemaforoKind,
   value: number,
   mustOverride?: number,
@@ -57,12 +57,12 @@ export function getSemaforoClass(
   const clientesGreenThreshold = CLIENTES_GREEN * must;
 
   if (kind === "clientes") {
-    if (value >= clientesGreenThreshold) return "bg-green-200";
-    if (value >= clientesYellowThreshold) return "bg-yellow-200";
-    return "bg-red-200";
+    if (value >= clientesGreenThreshold) return "🟢";
+    if (value >= clientesYellowThreshold) return "🟡";
+    return "🔴";
   }
 
-  if (value >= ventasGreenThreshold) return "bg-green-200";
-  if (value >= ventasYellowThreshold) return "bg-yellow-200";
-  return "bg-red-200";
+  if (value >= ventasGreenThreshold) return "🟢";
+  if (value >= ventasYellowThreshold) return "🟡";
+  return "🔴";
 }

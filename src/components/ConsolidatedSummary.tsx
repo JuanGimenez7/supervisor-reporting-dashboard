@@ -10,7 +10,7 @@ import {
   formatInteger,
   formatPercent,
 } from "../lib/report-utils";
-import { getSemaforoClass } from "../lib/semaforo";
+import { getSemaforoEmoji } from "../lib/semaforo";
 
 export default function ConsolidatedSummary() {
   const {
@@ -168,21 +168,15 @@ export default function ConsolidatedSummary() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">
-              Cumplimiento de Ventas
-            </p>
-            <div
-              className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
-                "ventas",
-                percentVentasCumplidas,
-              )}`}
-            >
-              <p className="text-base lg:text-2xl font-semibold text-gray-900 m-0">
-                {formatPercent(percentVentasCumplidas)}
-              </p>
-            </div>
-          </div>
+           <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+             <p className="text-xs lg:text-sm text-gray-500">
+               Cumplimiento de Ventas
+             </p>
+             <p className="mt-1 flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+               <span>{getSemaforoEmoji("ventas", percentVentasCumplidas)}</span>
+               <span>{formatPercent(percentVentasCumplidas)}</span>
+             </p>
+           </div>
         </div>
       </div>
 
@@ -207,21 +201,15 @@ export default function ConsolidatedSummary() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">
-              Cumplimiento de Clientes
-            </p>
-            <div
-              className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
-                "clientes",
-                percentClientesActivados,
-              )}`}
-            >
-              <p className="text-base lg:text-2xl font-semibold text-gray-900 m-0">
-                {formatPercent(percentClientesActivados)}
-              </p>
-            </div>
-          </div>
+           <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+             <p className="text-xs lg:text-sm text-gray-500">
+               Cumplimiento de Clientes
+             </p>
+             <p className="mt-1 flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+               <span>{getSemaforoEmoji("clientes", percentClientesActivados)}</span>
+               <span>{formatPercent(percentClientesActivados)}</span>
+             </p>
+           </div>
         </div>
       </div>
 
@@ -244,21 +232,15 @@ export default function ConsolidatedSummary() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">
-              Cumplimiento de Cobros
-            </p>
-            <div
-              className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
-                "cobros",
-                percentCobrosCumplidas,
-              )}`}
-            >
-              <p className="text-base lg:text-2xl font-semibold text-gray-900 m-0">
-                {formatPercent(percentCobrosCumplidas)}
-              </p>
-            </div>
-          </div>
+           <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+             <p className="text-xs lg:text-sm text-gray-500">
+               Cumplimiento de Cobros
+             </p>
+             <p className="mt-1 flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+               <span>{getSemaforoEmoji("cobros", percentCobrosCumplidas)}</span>
+               <span>{formatPercent(percentCobrosCumplidas)}</span>
+             </p>
+           </div>
         </div>
       </div>
 
