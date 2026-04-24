@@ -6,4 +6,4 @@
 4. Modificar, actualizar y mejorar exportaciones a PDF y Excel.
 5. Poder filtrar por varios supervisores o vendedores si se desea (selección múltiple).
 6. Poder ordenar filas de la tabla según orden alfabético (1era columna) o tamaño numérico (las demás).
-7.  Actualizar y mejorar la lógica de los filtros supervisor y vendedor para que sea en cascada.
+7. Actualizar y mejorar la lógica de los filtros supervisor y vendedor para que sea en cascada.

@@ -353,7 +353,7 @@ export default function FiltersAndTable() {
                 MARCAS
               </th>
               <th
-                colSpan={2}
+                colSpan={3}
                 className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
               >
                 RENGLONES
@@ -389,6 +389,9 @@ export default function FiltersAndTable() {
               </th>
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 PROMEDIO
+              </th>
+              <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                TOTAL
               </th>
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 IMPORTADOS
@@ -489,6 +492,12 @@ export default function FiltersAndTable() {
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatInteger(group.promedioMarcasActivadas)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(
+                        group.totals.RENGLONES_IMPORTADOS +
+                          group.totals.RENGLONES_NACIONALES,
+                      )}
                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.RENGLONES_IMPORTADOS)}
@@ -600,6 +609,12 @@ export default function FiltersAndTable() {
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatInteger(vendorGroup.promedioMarcasActivadas)}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          {formatNumber(
+                            vendorGroup.totals.RENGLONES_IMPORTADOS +
+                              vendorGroup.totals.RENGLONES_NACIONALES,
+                          )}
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(

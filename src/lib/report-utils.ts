@@ -48,7 +48,7 @@ export type NumericColumn = (typeof NUMERIC_COLUMNS)[number];
 export type NumericTotals = Record<NumericColumn, number>;
 
 export const ALL_OPTION = "__ALL__";
-export const LEAF_COLUMN_COUNT = 13;
+export const LEAF_COLUMN_COUNT = 14;
 
 export function createEmptyTotals(): NumericTotals {
   return {

@@ -4,7 +4,7 @@
 - **Proyecto**: `supervisor-reporting-dashboard`
 - **Stack**: Next.js 16 (App Router), TypeScript, Tailwind CSS
 - **Fuente de datos**: Archivo JSON estático (`public/report-[dd-mm].json`)
-- **Objetivo principal**: Dashboard filtrable de ventas/reporte por supervisor
+- **Objetivo principal**: Dashboard filtrable de reporte para supervisores
 - **Exportaciones**: PDF y Excel para vista filtrada y lotes agrupados
 - **Destino de despliegue**: Netlify (export estático)
 
@@ -40,6 +40,7 @@ Si una funcionalidad solicitada requiere backend, explicar trade-offs y pedir ap
 - Contrato actual del dataset (`public/report-[dd-mm].json`):
   - `SUPERVISOR` (string)
   - `REGION` (string)
+  - `ZONA` (numeric string)
   - `VENDEDOR` (string)
   - `PRESUPUESTO_VENTAS` (numeric string)
   - `VENDIDO` (numeric string)
