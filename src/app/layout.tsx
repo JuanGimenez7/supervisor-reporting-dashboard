@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dashboard de Supervisores de Ventas",
   icons: {
-    icon: "/favicon.webp",
+    icon: "/favicon.ico",
   },
 };
 
