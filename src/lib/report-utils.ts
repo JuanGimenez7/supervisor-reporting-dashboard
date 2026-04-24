@@ -168,31 +168,29 @@ export function buildVendorPdfBlob(params: {
   const doc = new jsPDF({ orientation: "portrait" });
   doc.setFontSize(12);
   doc.text(vendorName, 14, 14);
-  // show supervisor and region under the title (simple inline layout)
+  // show supervisor and region under the title
   doc.setFontSize(10);
   doc.setTextColor(100);
   doc.text(`Supervisor: ${sup}   Región: ${reg}`, 14, 20);
 
-  // We'll render a custom 4x3 grid similar to the modal using direct drawing
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const marginX = 14;
   const marginY = 12;
   const contentWidth = pageWidth - marginX * 2;
-  // tighten gaps for PDF to fit more content
   const colGap = 4;
-  // reduce card width slightly so three cards comfortably fit in portrait
   const baseColWidth = (contentWidth - colGap * 2) / 4;
-  const titleAreaHeight = 20; // space used by title + supervisor/region
-  // compute available vertical space for the 4 groups
+  const titleAreaHeight = 20;
+  // 5 groups now: Ventas, Clientes, Cobros, Renglones, Marcas
+  const groupsCount = 5;
+  const sectionGap = 4;
   const availableHeight = pageHeight - marginY - titleAreaHeight - marginY;
-  const groupsCount = 4;
-  const sectionGap = 4; // smaller vertical gap between sections
-  // each group gets a block; subtract gaps between groups
   const perGroupBlock = Math.floor((availableHeight - sectionGap * (groupsCount - 1)) / groupsCount);
-  const titleHeight = 10; // space for section title
+  const titleHeight = 10;
   const cardHeight = perGroupBlock - titleHeight - 30;
-  let currentY = marginY + titleAreaHeight; // start below title and supervisor/region
+  let currentY = marginY + titleAreaHeight;
+
+  const totalRenglones = totals.RENGLONES_IMPORTADOS + totals.RENGLONES_NACIONALES;
 
   const groups = [
     {
@@ -220,11 +218,17 @@ export function buildVendorPdfBlob(params: {
       ],
     },
     {
-      title: "Marcas / Renglones",
+      title: "Renglones",
       metrics: [
-        { label: "Marcas Activadas", value: formatInteger(promedioMarcas) },
-        { label: "Renglones Importados", value: formatNumber(totals.RENGLONES_IMPORTADOS) },
-        { label: "Renglones Nacionales", value: formatNumber(totals.RENGLONES_NACIONALES) },
+        { label: "Total", value: formatNumber(totalRenglones) },
+        { label: "Importados", value: formatNumber(totals.RENGLONES_IMPORTADOS) },
+        { label: "Nacionales", value: formatNumber(totals.RENGLONES_NACIONALES) },
+      ],
+    },
+    {
+      title: "Marcas",
+      metrics: [
+        { label: "Total", value: formatInteger(promedioMarcas) },
       ],
     },
   ];
@@ -237,29 +241,48 @@ export function buildVendorPdfBlob(params: {
     doc.text(group.title, marginX, currentY + 6);
     doc.setFont("helvetica", "normal");
 
-    // draw three cards
     const cardY = currentY + titleHeight;
-    for (let i = 0; i < 3; i++) {
-      const x = marginX + i * (baseColWidth + colGap);
-      // card border (thin)
+    const metricsCount = group.metrics.length;
+    
+    if (metricsCount === 1) {
+      // single card aligned left (same size as other cards)
       doc.setDrawColor(220);
       doc.setLineWidth(0.35);
-      doc.rect(x, cardY, baseColWidth, cardHeight);
+      doc.rect(marginX, cardY, baseColWidth, cardHeight);
 
-      // label (smaller) — reduced gap to value
       doc.setFontSize(10);
       doc.setTextColor(100);
-      const labelX = x + baseColWidth / 2;
-      const labelY = cardY + 4; // closer to top
-      doc.text(group.metrics[i].label, labelX, labelY, { align: "center" });
+      const labelX = marginX + baseColWidth / 2;
+      const labelY = cardY + 4;
+      doc.text(group.metrics[0].label, labelX, labelY, { align: "center" });
 
-      // value (smaller to fit) — place closer to label
       const valueY = labelY + 8;
       doc.setFontSize(12);
       doc.setTextColor(33);
       doc.setFont("helvetica", "bold");
-      doc.text(String(group.metrics[i].value), labelX, valueY, { align: "center" });
+      doc.text(String(group.metrics[0].value), labelX, valueY, { align: "center" });
       doc.setFont("helvetica", "normal");
+    } else {
+      // three cards for other groups
+      for (let i = 0; i < 3; i++) {
+        const x = marginX + i * (baseColWidth + colGap);
+        doc.setDrawColor(220);
+        doc.setLineWidth(0.35);
+        doc.rect(x, cardY, baseColWidth, cardHeight);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        const labelX = x + baseColWidth / 2;
+        const labelY = cardY + 4;
+        doc.text(group.metrics[i].label, labelX, labelY, { align: "center" });
+
+        const valueY = labelY + 8;
+        doc.setFontSize(12);
+        doc.setTextColor(33);
+        doc.setFont("helvetica", "bold");
+        doc.text(String(group.metrics[i].value), labelX, valueY, { align: "center" });
+        doc.setFont("helvetica", "normal");
+      }
     }
 
     currentY = cardY + cardHeight + sectionGap;
