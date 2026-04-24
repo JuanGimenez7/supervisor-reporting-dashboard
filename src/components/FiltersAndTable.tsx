@@ -448,6 +448,9 @@ export default function FiltersAndTable() {
                         <span>{group.supervisor}</span>
                       </button>
                     </td>
+                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-center font-semibold text-gray-900">
+                       –
+                     </td>
                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
                       {formatNumber(group.totals.PRESUPUESTO_VENTAS)}
                     </td>
