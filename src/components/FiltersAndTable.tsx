@@ -79,23 +79,16 @@ export default function FiltersAndTable() {
     return Array.from(supervisorMap.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([supervisor, supervisorRows]) => {
-        const vendorMap = new Map<string, ReportRowRaw[]>();
-
-        for (const row of supervisorRows) {
-          const vendorRows = vendorMap.get(row.VENDEDOR) ?? [];
-          vendorRows.push(row);
-          vendorMap.set(row.VENDEDOR, vendorRows);
-        }
-
-        const vendors = Array.from(vendorMap.entries())
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([vendor, vendorRows]) => ({
-            vendor,
-            rows: vendorRows,
-            region: vendorRows[0]?.REGION ?? "",
-            totals: aggregateTotals(vendorRows),
+        const vendors = supervisorRows
+          .sort((a, b) => a.ZONA.localeCompare(b.ZONA))
+          .map((row) => ({
+            vendor: row.VENDEDOR,
+            zona: row.ZONA,
+            rows: [row],
+            region: row.REGION,
+            totals: aggregateTotals([row]),
             promedioMarcasActivadas: calculateAverageValue(
-              vendorRows,
+              [row],
               "MARCAS_ACTIVADAS",
             ),
           }));
@@ -114,6 +107,7 @@ export default function FiltersAndTable() {
 
   const [selectedVendor, setSelectedVendor] = useState<{
     vendor: string;
+    zona: string;
     supervisor: string;
     region: string;
     rows: ReportRowRaw[];
@@ -320,13 +314,19 @@ export default function FiltersAndTable() {
       </div>
       <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-[0.68rem] lg:text-xs">
-          <thead className="sticky top-0 z-20 bg-white text-black">
+             <thead className="sticky top-0 z-20 bg-white text-black">
             <tr>
               <th
                 rowSpan={2}
                 className="whitespace-nowrap border border-gray-700 px-3 py-2 text-left font-semibold"
               >
                 SUPERVISOR / VENDEDOR
+              </th>
+              <th
+                rowSpan={2}
+                className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold"
+              >
+                ZONA
               </th>
               <th
                 colSpan={3}
@@ -507,6 +507,7 @@ export default function FiltersAndTable() {
                 const vendorRows = group.vendors.map(
                   (vendorGroup: {
                     vendor: string;
+                    zona: string;
                     rows: ReportRowRaw[];
                     region: string;
                     totals: NumericTotals;
@@ -527,11 +528,12 @@ export default function FiltersAndTable() {
 
                     return (
                       <tr
-                        key={`vendor-${group.supervisor}-${vendorGroup.vendor}`}
+                        key={`vendor-${group.supervisor}-${vendorGroup.vendor}-${vendorGroup.zona}`}
                         className="bg-white hover:bg-slate-50 cursor-pointer"
                         onClick={() =>
                           setSelectedVendor({
                             vendor: vendorGroup.vendor,
+                            zona: vendorGroup.zona,
                             supervisor: group.supervisor,
                             region: vendorGroup.region,
                             rows: vendorGroup.rows,
@@ -546,6 +548,7 @@ export default function FiltersAndTable() {
                           if (e.key === "Enter" || e.key === " ") {
                             setSelectedVendor({
                               vendor: vendorGroup.vendor,
+                              zona: vendorGroup.zona,
                               supervisor: group.supervisor,
                               region: vendorGroup.region,
                               rows: vendorGroup.rows,
@@ -558,6 +561,9 @@ export default function FiltersAndTable() {
                       >
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 pl-10 text-gray-800">
                           {vendorGroup.vendor}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-center text-gray-800">
+                          {vendorGroup.zona}
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.PRESUPUESTO_VENTAS)}
@@ -644,6 +650,9 @@ export default function FiltersAndTable() {
               <h3 className="text-base lg:text-lg font-semibold text-slate-700">
                 {selectedVendor.vendor}
               </h3>
+              <div className="text-sm text-gray-500">
+                Zona: {selectedVendor.rows[0]?.ZONA} | Región: {selectedVendor.region}
+              </div>
             </div>
 
             <div className="mt-4">

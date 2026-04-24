@@ -17,14 +17,6 @@ export default function Legend() {
   }, []);
 
   const must = info?.must ?? 0;
-
-  const fmt = (n: number) => `${Math.round(n)}%`;
-
-  const ventasYellow = 60 * must;
-  const ventasGreen = 90 * must;
-  const clientesYellow = 40 * must;
-  const clientesGreen = 60 * must;
-
   const refDate = info?.ref ?? null;
   const mustPct = Math.round(must * 100);
 

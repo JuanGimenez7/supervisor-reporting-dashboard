@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 export type ReportRowRaw = {
   SUPERVISOR: string;
   REGION: string;
+  ZONA: string;
   VENDEDOR: string;
   PRESUPUESTO_VENTAS: string;
   VENDIDO: string;
@@ -20,6 +21,7 @@ export type ReportRowRaw = {
 export const COLUMN_ORDER: Array<keyof ReportRowRaw> = [
   "SUPERVISOR",
   "REGION",
+  "ZONA",
   "VENDEDOR",
   "PRESUPUESTO_VENTAS",
   "VENDIDO",
@@ -48,7 +50,7 @@ export type NumericColumn = (typeof NUMERIC_COLUMNS)[number];
 export type NumericTotals = Record<NumericColumn, number>;
 
 export const ALL_OPTION = "__ALL__";
-export const LEAF_COLUMN_COUNT = 14;
+export const LEAF_COLUMN_COUNT = 15;
 
 export function createEmptyTotals(): NumericTotals {
   return {
@@ -125,7 +127,7 @@ export function toTitleCase(value: string): string {
   return value
     .toLowerCase()
     .trim()
-    .replace(/(^|[\s\-'])\S/g, (match) => match.toUpperCase());
+    .replace(/(^[\s\-']\S)/g, (match) => match.toUpperCase());
 }
 
 export function buildExcelBuffer(rows: ReportRowRaw[]): ArrayBuffer {
