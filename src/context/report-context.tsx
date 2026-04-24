@@ -26,7 +26,13 @@ export function ReportProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [supervisorFilter, setSupervisorFilter] = useState(ALL_OPTION);
+  const [supervisorFilter, setSupervisorFilter] = useState(() => {
+    if (typeof window !== "undefined") {
+      const param = localStorage.getItem("dashboard_supervisor_param");
+      if (param) return param;
+    }
+    return ALL_OPTION;
+  });
   const [vendedorFilter, setVendedorFilter] = useState(ALL_OPTION);
   const [regionFilter, setRegionFilter] = useState(ALL_OPTION);
   const [searchText, setSearchText] = useState("");
