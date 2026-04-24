@@ -211,16 +211,16 @@ export default function FiltersAndTable() {
     }));
   }
 
-  const areAllExpanded = useMemo(
+  const allCollapsed = useMemo(
     () =>
       pivotRows.length > 0 &&
-      pivotRows.every((g) => expandedSupervisors[g.supervisor] === true),
+      pivotRows.every((g) => !expandedSupervisors[g.supervisor]),
     [pivotRows, expandedSupervisors],
   );
 
   function toggleAllSupervisors() {
     setExpandedSupervisors(() => {
-      const nextValue = !areAllExpanded;
+      const nextValue = allCollapsed;
       return pivotRows.reduce<Record<string, boolean>>((acc, group) => {
         acc[group.supervisor] = nextValue;
         return acc;
@@ -249,7 +249,7 @@ export default function FiltersAndTable() {
               onClick={toggleAllSupervisors}
               disabled={pivotRows.length === 0}
             >
-              {areAllExpanded ? "Colapsar todo" : "Expandir todo"}
+              {allCollapsed ? "Expandir todo" : "Colapsar todo"}
             </button>
 
             <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
