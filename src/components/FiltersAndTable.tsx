@@ -277,11 +277,27 @@ export default function FiltersAndTable() {
 
             <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
               <span className="font-medium text-gray-700">Vendedor</span>
-              <select
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
-                value={vendedorFilter}
-                onChange={(event) => setVendedorFilter(event.target.value)}
-              >
+               <select
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
+                  value={supervisorFilter}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setSupervisorFilter(value);
+                    if (value === ALL_OPTION) {
+                      localStorage.removeItem("dashboard_supervisor_param");
+                    } else {
+                      localStorage.setItem("dashboard_supervisor_param", value);
+                    }
+                    // Also update URL
+                    const url = new URL(window.location.href);
+                    if (value === ALL_OPTION) {
+                      url.searchParams.delete("supervisor");
+                    } else {
+                      url.searchParams.set("supervisor", value);
+                    }
+                    window.history.replaceState({}, "", url.toString());
+                  }}
+                >
                 <option value={ALL_OPTION}>Todos</option>
                 {uniqueVendedores.map((value) => (
                   <option key={value} value={value}>
@@ -291,19 +307,23 @@ export default function FiltersAndTable() {
               </select>
             </label>
 
-             <button
-               type="button"
-               className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
-               onClick={() => {
-                 setSupervisorFilter(ALL_OPTION);
-                 setVendedorFilter(ALL_OPTION);
-                 setRegionFilter(ALL_OPTION);
-                 setSearchText("");
-                 localStorage.removeItem("dashboard_supervisor_param");
-               }}
-             >
-               Limpiar filtros
-             </button>
+               <button
+                 type="button"
+                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
+                 onClick={() => {
+                   setSupervisorFilter(ALL_OPTION);
+                   setVendedorFilter(ALL_OPTION);
+                   setRegionFilter(ALL_OPTION);
+                   setSearchText("");
+                   localStorage.removeItem("dashboard_supervisor_param");
+                   // Also update URL
+                   const url = new URL(window.location.href);
+                   url.searchParams.delete("supervisor");
+                   window.history.replaceState({}, "", url.toString());
+                 }}
+               >
+                 Limpiar filtros
+               </button>
           </div>
 
           <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:w-auto">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ReportProvider } from "../../context/report-context";
+import { ReportProvider, useReportContext } from "../../context/report-context";
 import Legend from "../../components/Legend";
 import ConsolidatedSummary from "../../components/ConsolidatedSummary";
 import BatchExport from "../../components/BatchExport";
@@ -16,15 +16,20 @@ export default function DashboardPage() {
 }
 
 function DashboardContent() {
+  const { setSupervisorFilter } = useReportContext();
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const supervisorParam = params.get("supervisor");
+    
     if (supervisorParam) {
+      setSupervisorFilter(supervisorParam);
       localStorage.setItem("dashboard_supervisor_param", supervisorParam);
     } else {
       localStorage.removeItem("dashboard_supervisor_param");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
