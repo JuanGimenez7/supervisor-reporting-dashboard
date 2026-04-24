@@ -320,7 +320,7 @@ export default function FiltersAndTable() {
       </div>
       <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-[0.68rem] lg:text-xs">
-          <thead className="sticky top-0 z-20 bg-gray-500 text-gray-50">
+          <thead className="sticky top-0 z-20 bg-white text-black">
             <tr>
               <th
                 rowSpan={2}
