@@ -172,7 +172,7 @@ export default function ConsolidatedSummary() {
              <p className="text-xs lg:text-sm text-gray-500">
                Cumplimiento de Ventas
              </p>
-             <p className="mt-1 flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+             <p className="flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
                <span>{getSemaforoEmoji("ventas", percentVentasCumplidas)}</span>
                <span>{formatPercent(percentVentasCumplidas)}</span>
              </p>
@@ -205,7 +205,7 @@ export default function ConsolidatedSummary() {
              <p className="text-xs lg:text-sm text-gray-500">
                Cumplimiento de Clientes
              </p>
-             <p className="mt-1 flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+             <p className="flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
                <span>{getSemaforoEmoji("clientes", percentClientesActivados)}</span>
                <span>{formatPercent(percentClientesActivados)}</span>
              </p>
@@ -236,7 +236,7 @@ export default function ConsolidatedSummary() {
              <p className="text-xs lg:text-sm text-gray-500">
                Cumplimiento de Cobros
              </p>
-             <p className="mt-1 flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+             <p className="flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
                <span>{getSemaforoEmoji("cobros", percentCobrosCumplidas)}</span>
                <span>{formatPercent(percentCobrosCumplidas)}</span>
              </p>
