@@ -26,8 +26,6 @@ export default function Legend() {
   const clientesGreen = 60 * must;
 
   const refDate = info?.ref ?? null;
-  const elapsedWorking = info?.elapsedWorking ?? 0;
-  const totalWorking = info?.totalWorking ?? 0;
   const mustPct = Math.round(must * 100);
 
   const formatDateDMY = (d: Date | null) => {

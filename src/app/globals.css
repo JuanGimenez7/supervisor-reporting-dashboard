@@ -3,7 +3,7 @@
 :root {
   /* Fondo principal: gris claro */
   --background: #f3f4f6; /* gray-100 */
-  --foreground: #111827; /* gray-900 */
+  --foreground: #333; /* gray-900 */
   --muted: #6b7280; /* gray-500 */
   --card: #f8fafc; /* ligero para tarjetas */
 }
@@ -18,7 +18,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #eee; /* fondo oscuro, también en escala de grises */
-    --foreground: #e5e7eb; /* gray-200 */
+    --foreground: #333; /* gray-200 */
     --muted: #9ca3af; /* gray-400 */
     --card: #111827;
   }

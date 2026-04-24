@@ -33,7 +33,7 @@ export function ReportProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
-    const report = "report-22-04.json";
+    const report = "report-23-04.json";
 
     async function loadData() {
       try {
