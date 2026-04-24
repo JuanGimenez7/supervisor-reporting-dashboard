@@ -151,28 +151,27 @@ export default function ConsolidatedSummary() {
     <section className="space-y-3">
       {/* Group 1: Ventas */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
-          <span className="text-base lg:text-lg">💰</span>
-          <span>Ventas</span>
-        </div>
-
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Presupuesto</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Presupuesto de Ventas
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatNumber(totalPresupuestoVentas)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
             <p className="text-xs lg:text-sm text-gray-500">Vendido</p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatNumber(totalVendido)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Cumplimiento</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Cumplimiento de Ventas
+            </p>
             <div
               className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
                 "ventas",
@@ -189,28 +188,29 @@ export default function ConsolidatedSummary() {
 
       {/* Group 2: Clientes */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
-          <span className="text-base lg:text-lg">👥</span>
-          <span>Clientes</span>
-        </div>
-
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Cartera</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Cartera de Clientes
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalClientes)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Activados</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Clientes Activados
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalClientesActivados)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Cumplimiento</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Cumplimiento de Clientes
+            </p>
             <div
               className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
                 "clientes",
@@ -227,28 +227,27 @@ export default function ConsolidatedSummary() {
 
       {/* Group 3: Cobros */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
-          <span className="text-base lg:text-lg">💵</span>
-          <span>Cobros</span>
-        </div>
-
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Presupuesto</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Presupuesto de Cobros
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatNumber(totalPresupuestoCobros)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
             <p className="text-xs lg:text-sm text-gray-500">Cobrado</p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatNumber(totalCobrado)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Cumplimiento</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Cumplimiento de Cobros
+            </p>
             <div
               className={`mt-1 inline-flex items-center gap-3 rounded px-2 py-1 ${getSemaforoClass(
                 "cobros",
@@ -265,28 +264,29 @@ export default function ConsolidatedSummary() {
 
       {/* Group 4: Renglones */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
-          <span className="text-base lg:text-lg">📦</span>
-          <span>Renglones</span>
-        </div>
-
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Total</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Total de Renglones
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalRenglones)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Importados</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Renglones Importados
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalRenglonesImportados)}
             </p>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Nacionales</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">
+              Renglones Nacionales
+            </p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(totalRenglonesNacionales)}
             </p>
@@ -296,14 +296,9 @@ export default function ConsolidatedSummary() {
 
       {/* Group 5: Marcas */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium lg:font-normal text-gray-700">
-          <span className="text-base lg:text-lg">🏷️</span>
-          <span>Marcas</span>
-        </div>
-
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
-            <p className="text-xs lg:text-sm text-gray-500">Promedio</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+            <p className="text-xs lg:text-sm text-gray-500">Promedio de Marcas</p>
             <p className="text-base lg:text-2xl font-semibold text-gray-900">
               {formatInteger(avgMarcasActivadas)}
             </p>
