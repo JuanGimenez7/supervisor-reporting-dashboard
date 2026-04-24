@@ -35,7 +35,12 @@ export default function FiltersAndTable() {
 
   const [expandedSupervisors, setExpandedSupervisors] = useState<
     Record<string, boolean>
-  >({});
+  >(() => {
+    if (typeof window === "undefined") return {};
+    const params = new URLSearchParams(window.location.search);
+    const supervisorParam = params.get("supervisor");
+    return supervisorParam ? { [supervisorParam]: true } : {};
+  });
 
   const uniqueSupervisores = useMemo(
     () => [...new Set(rows.map((r) => r.SUPERVISOR))].sort(),
