@@ -245,37 +245,37 @@ export default function ConsolidatedSummary() {
       </div>
 
        {/* Group 4: Renglones */}
-       <div className="space-y-2">
-         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-           <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
-             <p className="text-xs lg:text-sm text-gray-500">
-               Total de Renglones
-             </p>
-              <p className="flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
-                <span>{getSemaforoEmoji("renglones", filteredRows.length > 0 ? (totalRenglones / filteredRows.length) : 0)}</span>
-                <span>{formatInteger(totalRenglones)}</span>
+        <div className="space-y-2">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+              <p className="text-xs lg:text-sm text-gray-500">
+                Renglones Importados
               </p>
-           </div>
+              <p className="text-base lg:text-2xl font-semibold text-gray-900">
+                {formatInteger(totalRenglonesImportados)}
+              </p>
+            </div>
 
-           <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
-             <p className="text-xs lg:text-sm text-gray-500">
-               Renglones Importados
-             </p>
-             <p className="text-base lg:text-2xl font-semibold text-gray-900">
-               {formatInteger(totalRenglonesImportados)}
-             </p>
-           </div>
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+              <p className="text-xs lg:text-sm text-gray-500">
+                Renglones Nacionales
+              </p>
+              <p className="text-base lg:text-2xl font-semibold text-gray-900">
+                {formatInteger(totalRenglonesNacionales)}
+              </p>
+            </div>
 
-           <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
-             <p className="text-xs lg:text-sm text-gray-500">
-               Renglones Nacionales
-             </p>
-             <p className="text-base lg:text-2xl font-semibold text-gray-900">
-               {formatInteger(totalRenglonesNacionales)}
-             </p>
-           </div>
-         </div>
-       </div>
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">
+              <p className="text-xs lg:text-sm text-gray-500">
+                Total de Renglones
+              </p>
+               <p className="flex items-center gap-2 text-base lg:text-2xl font-semibold text-gray-900">
+                 <span>{getSemaforoEmoji("renglones", filteredRows.length > 0 ? (totalRenglones / filteredRows.length) : 0)}</span>
+                 <span>{formatInteger(totalRenglones)}</span>
+               </p>
+            </div>
+          </div>
+        </div>
 
       {/* Group 5: Marcas */}
       <div className="space-y-2">

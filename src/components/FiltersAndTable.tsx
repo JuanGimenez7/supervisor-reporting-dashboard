@@ -254,26 +254,26 @@ export default function FiltersAndTable() {
             <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
               <span className="font-medium text-gray-700">Supervisor</span>
               <select
-                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
-                 value={supervisorFilter}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setSupervisorFilter(value);
-                    if (value === ALL_OPTION) {
-                      localStorage.removeItem("dashboard_supervisor_param");
-                    } else {
-                      localStorage.setItem("dashboard_supervisor_param", value);
-                    }
-                    // Also update URL
-                    const url = new URL(window.location.href);
-                    if (value === ALL_OPTION) {
-                      url.searchParams.delete("supervisor");
-                    } else {
-                      url.searchParams.set("supervisor", value);
-                    }
-                    window.history.replaceState({}, "", url.toString());
-                  }}
-               >
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
+                value={supervisorFilter}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSupervisorFilter(value);
+                  if (value === ALL_OPTION) {
+                    localStorage.removeItem("dashboard_supervisor_param");
+                  } else {
+                    localStorage.setItem("dashboard_supervisor_param", value);
+                  }
+                  // Also update URL
+                  const url = new URL(window.location.href);
+                  if (value === ALL_OPTION) {
+                    url.searchParams.delete("supervisor");
+                  } else {
+                    url.searchParams.set("supervisor", value);
+                  }
+                  window.history.replaceState({}, "", url.toString());
+                }}
+              >
                 <option value={ALL_OPTION}>Todos</option>
                 {uniqueSupervisores.map((value) => (
                   <option key={value} value={value}>
@@ -283,39 +283,39 @@ export default function FiltersAndTable() {
               </select>
             </label>
 
-             <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
-               <span className="font-medium text-gray-700">Vendedor</span>
-                <select
-                   className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
-                   value={vendedorFilter}
-                   onChange={(event) => setVendedorFilter(event.target.value)}
-                >
-                  <option value={ALL_OPTION}>Todos</option>
-                  {uniqueVendedores.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-             </label>
+            <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
+              <span className="font-medium text-gray-700">Vendedor</span>
+              <select
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
+                value={vendedorFilter}
+                onChange={(event) => setVendedorFilter(event.target.value)}
+              >
+                <option value={ALL_OPTION}>Todos</option>
+                {uniqueVendedores.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-               <button
-                 type="button"
-                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
-                 onClick={() => {
-                   setSupervisorFilter(ALL_OPTION);
-                   setVendedorFilter(ALL_OPTION);
-                   setRegionFilter(ALL_OPTION);
-                   setSearchText("");
-                   localStorage.removeItem("dashboard_supervisor_param");
-                   // Also update URL
-                   const url = new URL(window.location.href);
-                   url.searchParams.delete("supervisor");
-                   window.history.replaceState({}, "", url.toString());
-                 }}
-               >
-                 Limpiar filtros
-               </button>
+            <button
+              type="button"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
+              onClick={() => {
+                setSupervisorFilter(ALL_OPTION);
+                setVendedorFilter(ALL_OPTION);
+                setRegionFilter(ALL_OPTION);
+                setSearchText("");
+                localStorage.removeItem("dashboard_supervisor_param");
+                // Also update URL
+                const url = new URL(window.location.href);
+                url.searchParams.delete("supervisor");
+                window.history.replaceState({}, "", url.toString());
+              }}
+            >
+              Limpiar filtros
+            </button>
           </div>
 
           <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:w-auto">
@@ -340,7 +340,7 @@ export default function FiltersAndTable() {
       </div>
       <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-[0.68rem] lg:text-xs">
-             <thead className="sticky top-0 z-20 bg-white text-black">
+          <thead className="sticky top-0 z-20 bg-white text-black">
             <tr>
               <th
                 rowSpan={2}
@@ -417,13 +417,13 @@ export default function FiltersAndTable() {
                 PROMEDIO
               </th>
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
-                TOTAL
-              </th>
-              <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 IMPORTADOS
               </th>
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 NACIONALES
+              </th>
+              <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                TOTAL
               </th>
             </tr>
           </thead>
@@ -455,92 +455,113 @@ export default function FiltersAndTable() {
                   group.totals.PRESUPUESTO_COBROS,
                 );
 
-                  const supervisorRow = (
-                    <tr
-                      key={`group-${group.supervisor}`}
-                      className="bg-gray-100 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => toggleSupervisor(group.supervisor)}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={
-                        isExpanded
-                          ? `Ocultar vendedores de ${group.supervisor}`
-                          : `Mostrar vendedores de ${group.supervisor}`
+                const supervisorRow = (
+                  <tr
+                    key={`group-${group.supervisor}`}
+                    className="bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => toggleSupervisor(group.supervisor)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={
+                      isExpanded
+                        ? `Ocultar vendedores de ${group.supervisor}`
+                        : `Mostrar vendedores de ${group.supervisor}`
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleSupervisor(group.supervisor);
                       }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          toggleSupervisor(group.supervisor);
-                        }
-                      }}
-                    >
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
-                        <span className="inline-flex items-center gap-2">
-                          <span className="inline-block w-4 text-center">
-                            {isExpanded ? "−" : "+"}
-                          </span>
-                          <span>{group.supervisor}</span>
+                    }}
+                  >
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
+                      <span className="inline-flex items-center gap-2">
+                        <span className="inline-block w-4 text-center">
+                          {isExpanded ? "−" : "+"}
                         </span>
-                      </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-center font-semibold text-gray-900">
-                        –
-                      </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.PRESUPUESTO_VENTAS)}
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.VENDIDO)}
-                     </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                          <span className="flex items-center justify-between gap-1">
-                          <span>{getSemaforoEmoji("ventas", ventasCumplidoSuper)}</span>
-                          <span>{formatPercent(ventasCumplidoSuper)}</span>
+                        <span>{group.supervisor}</span>
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-center font-semibold text-gray-900">
+                      –
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.PRESUPUESTO_VENTAS)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.VENDIDO)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-between gap-1">
+                        <span>
+                          {getSemaforoEmoji("ventas", ventasCumplidoSuper)}
                         </span>
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.CARTERA_CLIENTES)}
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.CLIENTES_ACTIVADOS)}
-                     </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                        <span className="flex items-center justify-between gap-1">
-                          <span>{getSemaforoEmoji("clientes", clientesCumplidoSuper)}</span>
-                          <span>{formatPercent(clientesCumplidoSuper)}</span>
+                        <span>{formatPercent(ventasCumplidoSuper)}</span>
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.CARTERA_CLIENTES)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.CLIENTES_ACTIVADOS)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-between gap-1">
+                        <span>
+                          {getSemaforoEmoji("clientes", clientesCumplidoSuper)}
                         </span>
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.PRESUPUESTO_COBROS)}
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.COBRADO)}
-                     </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                        <span className="flex items-center justify-between gap-1">
-                          <span>{getSemaforoEmoji("cobros", cobrosCumplidoSuper)}</span>
-                          <span>{formatPercent(cobrosCumplidoSuper)}</span>
+                        <span>{formatPercent(clientesCumplidoSuper)}</span>
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.PRESUPUESTO_COBROS)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.COBRADO)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-between gap-1">
+                        <span>
+                          {getSemaforoEmoji("cobros", cobrosCumplidoSuper)}
                         </span>
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatInteger(group.promedioMarcasActivadas)}
-                     </td>
-                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                            <span className="flex items-center justify-between gap-1">
-                            <span>{getSemaforoEmoji("renglones", group.vendors.length > 0 ? (group.vendors.reduce((sum, v) => sum + v.totals.RENGLONES_IMPORTADOS + v.totals.RENGLONES_NACIONALES, 0) / group.vendors.length) : 0)}</span>
-                            <span>{formatNumber(
-                              group.totals.RENGLONES_IMPORTADOS +
-                                group.totals.RENGLONES_NACIONALES,
-                            )}</span>
-                          </span>
-                       </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.RENGLONES_IMPORTADOS)}
-                     </td>
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
-                       {formatNumber(group.totals.RENGLONES_NACIONALES)}
-                     </td>
-                   </tr>
-                 );
+                        <span>{formatPercent(cobrosCumplidoSuper)}</span>
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatInteger(group.promedioMarcasActivadas)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.RENGLONES_IMPORTADOS)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      {formatNumber(group.totals.RENGLONES_NACIONALES)}
+                    </td>
+                    <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right font-semibold text-gray-900">
+                      <span className="flex items-center justify-between gap-1">
+                        <span>
+                          {getSemaforoEmoji(
+                            "renglones",
+                            group.vendors.length > 0
+                              ? group.vendors.reduce(
+                                  (sum, v) =>
+                                    sum +
+                                    v.totals.RENGLONES_IMPORTADOS +
+                                    v.totals.RENGLONES_NACIONALES,
+                                  0,
+                                ) / group.vendors.length
+                              : 0,
+                          )}
+                        </span>
+                        <span>
+                          {formatNumber(
+                            group.totals.RENGLONES_IMPORTADOS +
+                              group.totals.RENGLONES_NACIONALES,
+                          )}
+                        </span>
+                      </span>
+                    </td>
+                  </tr>
+                );
 
                 if (!isExpanded) return [supervisorRow];
 
@@ -611,11 +632,13 @@ export default function FiltersAndTable() {
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.VENDIDO)}
                         </td>
-                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                           <span className="flex items-center justify-between gap-1">
-                             <span>{getSemaforoEmoji("ventas", ventasCumplidoVendor)}</span>
-                             <span>{formatPercent(ventasCumplidoVendor)}</span>
-                           </span>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-between gap-1">
+                            <span>
+                              {getSemaforoEmoji("ventas", ventasCumplidoVendor)}
+                            </span>
+                            <span>{formatPercent(ventasCumplidoVendor)}</span>
+                          </span>
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.CARTERA_CLIENTES)}
@@ -623,11 +646,16 @@ export default function FiltersAndTable() {
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.CLIENTES_ACTIVADOS)}
                         </td>
-                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                           <span className="flex items-center justify-between gap-1">
-                             <span>{getSemaforoEmoji("clientes", clientesCumplidoVendor)}</span>
-                             <span>{formatPercent(clientesCumplidoVendor)}</span>
-                           </span>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-between gap-1">
+                            <span>
+                              {getSemaforoEmoji(
+                                "clientes",
+                                clientesCumplidoVendor,
+                              )}
+                            </span>
+                            <span>{formatPercent(clientesCumplidoVendor)}</span>
+                          </span>
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.PRESUPUESTO_COBROS)}
@@ -635,24 +663,17 @@ export default function FiltersAndTable() {
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(vendorGroup.totals.COBRADO)}
                         </td>
-                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                           <span className="flex items-center justify-between gap-1">
-                             <span>{getSemaforoEmoji("cobros", cobrosCumplidoVendor)}</span>
-                             <span>{formatPercent(cobrosCumplidoVendor)}</span>
-                           </span>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-between gap-1">
+                            <span>
+                              {getSemaforoEmoji("cobros", cobrosCumplidoVendor)}
+                            </span>
+                            <span>{formatPercent(cobrosCumplidoVendor)}</span>
+                          </span>
                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatInteger(vendorGroup.promedioMarcasActivadas)}
                         </td>
-                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
-                              <span className="flex items-center justify-between gap-1">
-                              <span>{getSemaforoEmoji("renglones", vendorGroup.totals.RENGLONES_IMPORTADOS + vendorGroup.totals.RENGLONES_NACIONALES)}</span>
-                              <span>{formatNumber(
-                                vendorGroup.totals.RENGLONES_IMPORTADOS +
-                                  vendorGroup.totals.RENGLONES_NACIONALES,
-                              )}</span>
-                            </span>
-                         </td>
                         <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
                           {formatNumber(
                             vendorGroup.totals.RENGLONES_IMPORTADOS,
@@ -662,6 +683,23 @@ export default function FiltersAndTable() {
                           {formatNumber(
                             vendorGroup.totals.RENGLONES_NACIONALES,
                           )}
+                        </td>
+                        <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-right text-gray-800">
+                          <span className="flex items-center justify-between gap-1">
+                            <span>
+                              {getSemaforoEmoji(
+                                "renglones",
+                                vendorGroup.totals.RENGLONES_IMPORTADOS +
+                                  vendorGroup.totals.RENGLONES_NACIONALES,
+                              )}
+                            </span>
+                            <span>
+                              {formatNumber(
+                                vendorGroup.totals.RENGLONES_IMPORTADOS +
+                                  vendorGroup.totals.RENGLONES_NACIONALES,
+                              )}
+                            </span>
+                          </span>
                         </td>
                       </tr>
                     );
@@ -694,7 +732,8 @@ export default function FiltersAndTable() {
                 {selectedVendor.vendor}
               </h3>
               <div className="text-sm text-gray-500">
-                Zona: {selectedVendor.rows[0]?.ZONA} | Región: {selectedVendor.region}
+                Zona: {selectedVendor.rows[0]?.ZONA} | Región:{" "}
+                {selectedVendor.region}
               </div>
             </div>
 
