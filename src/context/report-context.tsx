@@ -39,7 +39,7 @@ export function ReportProvider({ children, initialSupervisorFilter }: { children
 
   useEffect(() => {
     let isMounted = true;
-    const report = "report-23-04.json";
+    const report = "report-24-04.json";
 
     async function loadData() {
       try {
