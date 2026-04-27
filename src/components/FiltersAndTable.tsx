@@ -455,25 +455,33 @@ export default function FiltersAndTable() {
                   group.totals.PRESUPUESTO_COBROS,
                 );
 
-                 const supervisorRow = (
-                   <tr key={`group-${group.supervisor}`} className="bg-gray-100">
-                     <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
-                       <button
-                         type="button"
-                         className="inline-flex items-center gap-2 rounded px-1 py-0.5 hover:bg-slate-200"
-                         onClick={() => toggleSupervisor(group.supervisor)}
-                         aria-label={
-                           isExpanded
-                             ? `Ocultar vendedores de ${group.supervisor}`
-                             : `Mostrar vendedores de ${group.supervisor}`
-                         }
-                       >
-                         <span className="inline-block w-4 text-center">
-                           {isExpanded ? "−" : "+"}
-                         </span>
-                         <span>{group.supervisor}</span>
-                       </button>
-                     </td>
+                  const supervisorRow = (
+                    <tr
+                      key={`group-${group.supervisor}`}
+                      className="bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => toggleSupervisor(group.supervisor)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={
+                        isExpanded
+                          ? `Ocultar vendedores de ${group.supervisor}`
+                          : `Mostrar vendedores de ${group.supervisor}`
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          toggleSupervisor(group.supervisor);
+                        }
+                      }}
+                    >
+                      <td className="whitespace-nowrap border border-gray-200 px-3 py-2 font-semibold text-gray-900">
+                        <span className="inline-flex items-center gap-2">
+                          <span className="inline-block w-4 text-center">
+                            {isExpanded ? "−" : "+"}
+                          </span>
+                          <span>{group.supervisor}</span>
+                        </span>
+                      </td>
                       <td className="whitespace-nowrap border border-gray-200 px-3 py-2 text-center font-semibold text-gray-900">
                         –
                       </td>
@@ -561,7 +569,7 @@ export default function FiltersAndTable() {
                     return (
                       <tr
                         key={`vendor-${group.supervisor}-${vendorGroup.vendor}-${vendorGroup.zona}`}
-                        className="bg-white hover:bg-slate-50 cursor-pointer"
+                        className="bg-white hover:bg-gray-50 cursor-pointer"
                         onClick={() =>
                           setSelectedVendor({
                             vendor: vendorGroup.vendor,
