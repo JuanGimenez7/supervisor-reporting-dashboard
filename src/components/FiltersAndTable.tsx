@@ -256,30 +256,6 @@ export default function FiltersAndTable() {
               <select
                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
                  value={supervisorFilter}
-                 onChange={(event) => {
-                   const value = event.target.value;
-                   setSupervisorFilter(value);
-                   if (value === ALL_OPTION) {
-                     localStorage.removeItem("dashboard_supervisor_param");
-                   } else {
-                     localStorage.setItem("dashboard_supervisor_param", value);
-                   }
-                 }}
-               >
-                <option value={ALL_OPTION}>Todos</option>
-                {uniqueSupervisores.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
-              <span className="font-medium text-gray-700">Vendedor</span>
-               <select
-                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
-                  value={supervisorFilter}
                   onChange={(event) => {
                     const value = event.target.value;
                     setSupervisorFilter(value);
@@ -297,15 +273,31 @@ export default function FiltersAndTable() {
                     }
                     window.history.replaceState({}, "", url.toString());
                   }}
-                >
+               >
                 <option value={ALL_OPTION}>Todos</option>
-                {uniqueVendedores.map((value) => (
+                {uniqueSupervisores.map((value) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
                 ))}
               </select>
             </label>
+
+             <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
+               <span className="font-medium text-gray-700">Vendedor</span>
+                <select
+                   className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
+                   value={vendedorFilter}
+                   onChange={(event) => setVendedorFilter(event.target.value)}
+                >
+                  <option value={ALL_OPTION}>Todos</option>
+                  {uniqueVendedores.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+             </label>
 
                <button
                  type="button"
