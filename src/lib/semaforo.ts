@@ -1,4 +1,4 @@
-export type SemaforoKind = "ventas" | "clientes" | "cobros";
+export type SemaforoKind = "ventas" | "clientes" | "cobros" | "renglones";
 
 // Devuelve información del "must" calculado para el día anterior al indicado
 // (por defecto: día anterior a hoy). Considera hábiles de lunes a viernes.
@@ -50,15 +50,25 @@ export function getSemaforoEmoji(
   const VENTAS_Y_COBROS_GREEN = 90;
   const CLIENTES_YELLOW = 40;
   const CLIENTES_GREEN = 60;
+  const RENGLONES_YELLOW = 400;
+  const RENGLONES_GREEN = 600;
 
   const ventasYellowThreshold = VENTAS_Y_COBROS_YELLOW * must;
   const ventasGreenThreshold = VENTAS_Y_COBROS_GREEN * must;
   const clientesYellowThreshold = CLIENTES_YELLOW * must;
   const clientesGreenThreshold = CLIENTES_GREEN * must;
+  const renglonesYellowThreshold = RENGLONES_YELLOW * must;
+  const renglonesGreenThreshold = RENGLONES_GREEN * must;
 
   if (kind === "clientes") {
     if (value >= clientesGreenThreshold) return "🟢";
     if (value >= clientesYellowThreshold) return "🟡";
+    return "🔴";
+  }
+
+  if (kind === "renglones") {
+    if (value >= renglonesGreenThreshold) return "🟢";
+    if (value >= renglonesYellowThreshold) return "🟡";
     return "🔴";
   }
 
