@@ -17,6 +17,9 @@ type ReportContextValue = {
   searchText: string;
   setSearchText: (v: string) => void;
   ALL_OPTION: string;
+  expandedSupervisors: Record<string, boolean>;
+  setExpandedSupervisors: (v: Record<string, boolean> | ((prev: Record<string, boolean>) => Record<string, boolean>)) => void;
+  toggleAllSupervisors: (pivotRows: Array<{ supervisor: string }>, allCollapsed: boolean) => void;
 };
 
 const ReportContext = createContext<ReportContextValue | undefined>(undefined);
@@ -36,6 +39,22 @@ export function ReportProvider({ children, initialSupervisorFilter }: { children
   const [vendedorFilter, setVendedorFilter] = useState(ALL_OPTION);
   const [regionFilter, setRegionFilter] = useState(ALL_OPTION);
   const [searchText, setSearchText] = useState("");
+  const [expandedSupervisors, setExpandedSupervisors] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    const params = new URLSearchParams(window.location.search);
+    const supervisorParam = params.get("supervisor");
+    return supervisorParam ? { [supervisorParam]: true } : {};
+  });
+
+  function toggleAllSupervisors(pivotRows: Array<{ supervisor: string }>, allCollapsed: boolean) {
+    const nextValue = allCollapsed;
+    setExpandedSupervisors(() =>
+      pivotRows.reduce<Record<string, boolean>>((acc, group) => {
+        acc[group.supervisor] = nextValue;
+        return acc;
+      }, {}),
+    );
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -77,6 +96,9 @@ export function ReportProvider({ children, initialSupervisorFilter }: { children
     searchText,
     setSearchText,
     ALL_OPTION,
+    expandedSupervisors,
+    setExpandedSupervisors,
+    toggleAllSupervisors,
   };
 
   return (

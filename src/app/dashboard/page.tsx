@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 import { ReportProvider } from "../../context/report-context";
 import Legend from "../../components/Legend";
+import FiltersAndExports from "../../components/FiltersAndExports";
 import ConsolidatedSummary from "../../components/ConsolidatedSummary";
 import BatchExport from "../../components/BatchExport";
-import FiltersAndTable from "../../components/FiltersAndTable";
+import DashboardTable from "../../components/DashboardTable";
 
 export default function DashboardPage() {
   // Leer el parámetro de URL sincrónicamente antes del primer render
@@ -36,9 +37,10 @@ export default function DashboardPage() {
     <ReportProvider initialSupervisorFilter={initialSupervisorFilter}>
       <main className="mx-auto flex min-h-screen w-full flex-col gap-4 p-4 lg:max-w-9xl lg:gap-6 lg:p-6">
         <Legend />
+        <FiltersAndExports />
         <ConsolidatedSummary />
         <BatchExport />
-        <FiltersAndTable />
+        <DashboardTable />
       </main>
     </ReportProvider>
   );

@@ -10,7 +10,6 @@ import {
   formatPercent,
   calculateCompliance,
   buildExcelBuffer,
-  buildPdfBlob,
   buildVendorPdfBlob,
   triggerDownload,
   LEAF_COLUMN_COUNT,
@@ -20,36 +19,16 @@ import {
 } from "../lib/report-utils";
 import { getSemaforoEmoji } from "../lib/semaforo";
 
-export default function FiltersAndTable() {
+export default function DashboardTable() {
   const {
     rows,
     supervisorFilter,
-    setSupervisorFilter,
     vendedorFilter,
-    setVendedorFilter,
     regionFilter,
-    setRegionFilter,
     searchText,
-    setSearchText,
+    expandedSupervisors,
+    setExpandedSupervisors,
   } = useReportContext();
-
-  const [expandedSupervisors, setExpandedSupervisors] = useState<
-    Record<string, boolean>
-  >(() => {
-    if (typeof window === "undefined") return {};
-    const params = new URLSearchParams(window.location.search);
-    const supervisorParam = params.get("supervisor");
-    return supervisorParam ? { [supervisorParam]: true } : {};
-  });
-
-  const uniqueSupervisores = useMemo(
-    () => [...new Set(rows.map((r) => r.SUPERVISOR))].sort(),
-    [rows],
-  );
-  const uniqueVendedores = useMemo(
-    () => [...new Set(rows.map((r) => r.VENDEDOR))].sort(),
-    [rows],
-  );
 
   const filteredRows = useMemo(() => {
     const text = (searchText || "").trim().toLowerCase();
@@ -210,134 +189,8 @@ export default function FiltersAndTable() {
     }));
   }
 
-  const allCollapsed = useMemo(
-    () =>
-      pivotRows.length > 0 &&
-      pivotRows.every((g) => !expandedSupervisors[g.supervisor]),
-    [pivotRows, expandedSupervisors],
-  );
-
-  function toggleAllSupervisors() {
-    setExpandedSupervisors(() => {
-      const nextValue = allCollapsed;
-      return pivotRows.reduce<Record<string, boolean>>((acc, group) => {
-        acc[group.supervisor] = nextValue;
-        return acc;
-      }, {});
-    });
-  }
-
-  function exportCurrentExcel() {
-    const buffer = buildExcelBuffer(filteredRows);
-    triggerDownload(buffer, "reporte-filtrado.xlsx");
-  }
-
-  function exportCurrentPdf() {
-    const blob = buildPdfBlob(filteredRows, "Reporte filtrado");
-    triggerDownload(blob, "reporte-filtrado.pdf");
-  }
-
   return (
     <section className="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm w-full">
-      <div className="border-b border-gray-200 px-4 py-3">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <button
-              type="button"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
-              onClick={toggleAllSupervisors}
-              disabled={pivotRows.length === 0}
-            >
-              {allCollapsed ? "Expandir todo" : "Colapsar todo"}
-            </button>
-
-            <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
-              <span className="font-medium text-gray-700">Supervisor</span>
-              <select
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
-                value={supervisorFilter}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setSupervisorFilter(value);
-                  if (value === ALL_OPTION) {
-                    localStorage.removeItem("dashboard_supervisor_param");
-                  } else {
-                    localStorage.setItem("dashboard_supervisor_param", value);
-                  }
-                  // Also update URL
-                  const url = new URL(window.location.href);
-                  if (value === ALL_OPTION) {
-                    url.searchParams.delete("supervisor");
-                  } else {
-                    url.searchParams.set("supervisor", value);
-                  }
-                  window.history.replaceState({}, "", url.toString());
-                }}
-              >
-                <option value={ALL_OPTION}>Todos</option>
-                {uniqueSupervisores.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex w-full items-center gap-2 text-xs lg:text-sm lg:w-auto">
-              <span className="font-medium text-gray-700">Vendedor</span>
-              <select
-                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 lg:w-auto"
-                value={vendedorFilter}
-                onChange={(event) => setVendedorFilter(event.target.value)}
-              >
-                <option value={ALL_OPTION}>Todos</option>
-                {uniqueVendedores.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <button
-              type="button"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-100 lg:w-auto"
-              onClick={() => {
-                setSupervisorFilter(ALL_OPTION);
-                setVendedorFilter(ALL_OPTION);
-                setRegionFilter(ALL_OPTION);
-                setSearchText("");
-                localStorage.removeItem("dashboard_supervisor_param");
-                // Also update URL
-                const url = new URL(window.location.href);
-                url.searchParams.delete("supervisor");
-                window.history.replaceState({}, "", url.toString());
-              }}
-            >
-              Limpiar filtros
-            </button>
-          </div>
-
-          <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:w-auto">
-            <button
-              type="button"
-              className="w-full rounded-md bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
-              onClick={exportCurrentExcel}
-              disabled={filteredRows.length === 0}
-            >
-              Exportar Excel (vista actual)
-            </button>
-            <button
-              type="button"
-              className="w-full rounded-md bg-gray-700 px-3 py-2 text-xs lg:text-sm font-medium text-gray-50 hover:bg-gray-800 lg:w-auto"
-              onClick={exportCurrentPdf}
-              disabled={filteredRows.length === 0}
-            >
-              Exportar PDF (vista actual)
-            </button>
-          </div>
-        </div>
-      </div>
       <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-[0.68rem] lg:text-xs">
           <thead className="sticky top-0 z-20 bg-white text-black">
@@ -911,6 +764,7 @@ export default function FiltersAndTable() {
                 </div>
               </div>
             </div>
+
             <div className="mt-6 flex gap-3 justify-center">
               <button
                 type="button"
