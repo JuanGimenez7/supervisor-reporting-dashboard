@@ -30,6 +30,8 @@ export default function DashboardTable() {
     setExpandedSupervisors,
   } = useReportContext();
 
+  const [ventasCumplidoSort, setVentasCumplidoSort] = useState<'asc' | 'desc'>('desc');
+
   const filteredRows = useMemo(() => {
     const text = (searchText || "").trim().toLowerCase();
     return rows.filter((row) => {
@@ -60,11 +62,9 @@ export default function DashboardTable() {
       supervisorMap.set(row.SUPERVISOR, supervisorRows);
     }
 
-    return Array.from(supervisorMap.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([supervisor, supervisorRows]) => {
+    const pivotData = Array.from(supervisorMap.entries()).map(
+      ([supervisor, supervisorRows]) => {
         const vendors = supervisorRows
-          .sort((a, b) => a.ZONA.localeCompare(b.ZONA))
           .map((row) => ({
             vendor: row.VENDEDOR,
             zona: row.ZONA,
@@ -75,7 +75,22 @@ export default function DashboardTable() {
               [row],
               "MARCAS_ACTIVADAS",
             ),
-          }));
+          }))
+          .sort((a, b) => {
+            const aCumplido = calculateCompliance(
+              a.totals.VENDIDO,
+              a.totals.PRESUPUESTO_VENTAS,
+            );
+            const bCumplido = calculateCompliance(
+              b.totals.VENDIDO,
+              b.totals.PRESUPUESTO_VENTAS,
+            );
+            if (ventasCumplidoSort === "asc") {
+              return aCumplido - bCumplido;
+            } else {
+              return bCumplido - aCumplido;
+            }
+          });
 
         return {
           supervisor,
@@ -86,8 +101,27 @@ export default function DashboardTable() {
           ),
           vendors,
         };
-      });
-  }, [filteredRows]);
+      },
+    );
+
+    pivotData.sort((a, b) => {
+      const aCumplido = calculateCompliance(
+        a.totals.VENDIDO,
+        a.totals.PRESUPUESTO_VENTAS,
+      );
+      const bCumplido = calculateCompliance(
+        b.totals.VENDIDO,
+        b.totals.PRESUPUESTO_VENTAS,
+      );
+      return ventasCumplidoSort === "asc" ? aCumplido - bCumplido : bCumplido - aCumplido;
+    });
+
+    return pivotData;
+  }, [filteredRows, ventasCumplidoSort]);
+
+  function toggleVentasCumplidoSort() {
+    setVentasCumplidoSort((current) => (current === "asc" ? "desc" : "asc"));
+  }
 
   const [selectedVendor, setSelectedVendor] = useState<{
     vendor: string;
@@ -242,9 +276,22 @@ export default function DashboardTable() {
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 PRESUPUESTO
               </th>
-              <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
-                VENDIDO
-              </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  VENDIDO
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  <button
+                    className="w-full px-3 py-2 text-center font-semibold hover:bg-gray-300/60 active:bg-gray-300/80 rounded flex items-center justify-center gap-1"
+                    onClick={toggleVentasCumplidoSort}
+                  >
+                    CUMPLIDO
+                    {ventasCumplidoSort === "desc" && <span className="text-xs">▼</span>}
+                    {ventasCumplidoSort === "asc" && <span className="text-xs">▲</span>}
+                  </button>
+                </th>
+                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
+                  PRESUPUESTO
+                </th>
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 CUMPLIDO
               </th>
