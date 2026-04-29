@@ -289,12 +289,6 @@ export default function DashboardTable() {
                     {ventasCumplidoSort === "asc" && <span className="text-xs">▲</span>}
                   </button>
                 </th>
-                <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
-                  PRESUPUESTO
-                </th>
-              <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
-                CUMPLIDO
-              </th>
               <th className="whitespace-nowrap border border-gray-700 px-3 py-2 text-center font-semibold">
                 CARTERA
               </th>
